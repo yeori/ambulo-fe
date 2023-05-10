@@ -7,7 +7,8 @@
     "dev": "NODE_ENV=development vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "pub:prod": "npm run build && ./scripts/cp-rss.sh"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.3",
@@ -18,7 +19,14 @@
     "svelte-check": "^2.10.3",
     "tslib": "^2.5.0",
     "typescript": "^5.0.2",
-    "vite": "^4.3.2"
+    "vite": "^4.3.2",
+    "vite-plugin-pwa": "^0.14.7",
+    "workbox-build": "^6.5.4",
+    "workbox-cacheable-response": "^6.5.4",
+    "workbox-core": "^6.5.4",
+    "workbox-precaching": "^6.5.4",
+    "workbox-routing": "^6.5.4",
+    "workbox-strategies": "^6.5.4"
   },
   "dependencies": {
     "page": "^1.11.6"

@@ -6,7 +6,6 @@
     "module": "ESNext",
     "moduleResolution": "nodenext",
     "resolveJsonModule": true,
-
     /**
      * Typecheck JS in `.svelte` and `.js` files by default.
      * Disable checkJs if you'd like to use dynamic types in JS.
@@ -15,8 +14,15 @@
      */
     "allowJs": true,
     "checkJs": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "lib": ["ESNext", "WebWorker", "DOM"]
   },
-  "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
+  "include": [
+    "src/**/*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.svelte",
+    "xconfig/*.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
