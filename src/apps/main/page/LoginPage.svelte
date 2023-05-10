@@ -1,5 +1,6 @@
 <script lang="ts">
   // your script goes here
+  console.log('dd')
 </script>
 
 <main>

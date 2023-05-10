@@ -63,5 +63,9 @@ button {
   &.nude {
     background-color: transparent;
     outline: none;
+    border: none;
+    background-color: white;
+    padding: 4px 8px;
+    cursor: pointer;
   }
 }

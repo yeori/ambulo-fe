@@ -15,14 +15,20 @@
     "allowJs": true,
     "checkJs": true,
     "isolatedModules": true,
-    "lib": ["ESNext", "WebWorker", "DOM"]
+    "lib": ["ESNext", "WebWorker", "DOM"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@main/*": ["./src/apps/main/*"]
+    }
   },
   "include": [
     "src/**/*.d.ts",
     "src/**/*.ts",
     "src/**/*.js",
     "src/**/*.svelte",
-    "xconfig/*.ts"
+    "xconfig/*.ts",
+    "types/kakao.d.ts"
   ],
+  // "files": [],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
