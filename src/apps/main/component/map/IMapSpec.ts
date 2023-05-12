@@ -5,7 +5,7 @@ export interface IMapPos {
   /**
    * returns vendor specific position instance
    */
-  toCoord(): any
+  toLatLng(): any
 }
 export interface IMapSpec {
   /**

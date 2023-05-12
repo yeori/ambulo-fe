@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "pub:prod": "npm run build && ./scripts/cp-rss.sh"
+    "pub:prod": "npm run build && ./scripts/cp-rss.sh",
+    "staging": "NODE_ENV=staging vite build && ./scripts/cp-rss.sh"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.3",

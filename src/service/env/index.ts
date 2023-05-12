@@ -1,9 +1,9 @@
-const props = 'MODE,BACKEND_HOST,KAKAOMAP_KEY'.split(',')
+const props = 'MODE,BACKEND_HOST,KEY_KAKAO_MAP'.split(',')
 
 type EnvProp = {
   MODE?: string
   BACKEND_HOST?: string
-  KAKAOMAP_KEY?: string
+  KEY_KAKAO_MAP?: string
 }
 const env: EnvProp = {}
 
@@ -16,4 +16,4 @@ export class Environment {
   constructor(readonly mode, readonly backendHost, readonly kakaoApiKey) {}
 }
 
-export default new Environment(env.MODE, env.BACKEND_HOST, env.KAKAOMAP_KEY)
+export default new Environment(env.MODE, env.BACKEND_HOST, env.KEY_KAKAO_MAP)

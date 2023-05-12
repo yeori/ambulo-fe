@@ -1,5 +1,7 @@
 declare module KakaoMap {
-  maps: any
+  maps: {
+    Polyline: any
+  }
 }
 interface Window {
   kakao: KakaoMap

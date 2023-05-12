@@ -7,6 +7,7 @@ const DEFAULT_GEO_SETTING: PositionOptions = {
 export class GeoLocation {
   private permStatus: PermissionStatus
   private setting: PositionOptions
+  private watchId: number | undefined
   constructor(setting: PositionOptions = DEFAULT_GEO_SETTING) {
     this.setting = setting
     navigator.permissions.query({ name: 'geolocation' }).then((status) => {
@@ -25,5 +26,15 @@ export class GeoLocation {
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(resolve, reject, this.setting)
     })
+  }
+  watchPosition(success: PositionCallback, error: PositionErrorCallback) {
+    this.watchId = navigator.geolocation.watchPosition(
+      success,
+      error || (() => {}),
+      this.setting
+    )
+  }
+  clearWatch() {
+    navigator.geolocation.clearWatch(this.watchId)
   }
 }
