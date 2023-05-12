@@ -36,7 +36,12 @@ class LocationStore {
 }
 export const locationStore = new LocationStore()
 
-const geo = new GeoLocation()
+const highAccuracyOption: PositionOptions = {
+  enableHighAccuracy: true,
+  maximumAge: 0, // 이 값이 0이면 매번 최신 위치값을 가져온다고 함
+  timeout: 10 * 1000
+}
+const geo = new GeoLocation(highAccuracyOption)
 
 // const timer = new PeriodicTimer(
 //   () => {

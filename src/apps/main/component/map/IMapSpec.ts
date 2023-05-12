@@ -7,7 +7,11 @@ export interface IMapPos {
    */
   toLatLng(): any
 }
+export interface IMapPath {
+  addPosition(pos: GeolocationPosition): IMapPath
+}
 export interface IMapSpec {
+  createPath(): IMapPath
   /**
    *
    * @param pos {lat, lng} location info

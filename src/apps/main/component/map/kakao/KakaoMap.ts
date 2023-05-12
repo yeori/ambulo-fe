@@ -1,22 +1,6 @@
 import type { IMapPos, IMapSpec } from '../IMapSpec.js'
 import { KakaoPath } from './KakaoPath.js'
 
-export class KakaoPos implements IMapPos {
-  constructor(private readonly geoPos: GeolocationPosition) {}
-  get lat() {
-    return this.geoPos.coords.latitude
-  }
-  get lng() {
-    return this.geoPos.coords.longitude
-  }
-  get alt() {
-    return undefined
-  }
-  toLatLng() {
-    return new window.kakao.maps.LatLng(this.lat, this.lng)
-  }
-}
-
 export class KakaoMap implements IMapSpec {
   pos: IMapPos
   apiKey: string
@@ -35,13 +19,13 @@ export class KakaoMap implements IMapSpec {
     this.pos = pos
     this.mapHandle = undefined
   }
-  render(pos: IMapPos, zoomLevel) {
+  render(pos: IMapPos, zoomLevel: number) {
     this.pos = pos
     this.zoom = zoomLevel
-    this.mapHandle = new window.kakao.maps.Map(this.el, {
+    this.mapHandle = new kakao.maps.Map(this.el, {
       center: pos.toLatLng(),
       level: this.zoom
-    })
+    } as kakao.maps.KakoMapOption)
     return this
   }
 
