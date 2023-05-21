@@ -18,7 +18,8 @@
     "lib": ["ESNext", "WebWorker", "DOM"],
     "paths": {
       "@/*": ["./src/*"],
-      "@main/*": ["./src/apps/main/*"]
+      "@main/*": ["./src/apps/main/*"],
+      "@common/*": ["./src/common/*"]
     }
   },
   "include": [

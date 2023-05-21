@@ -36,6 +36,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@common': path.resolve(__dirname, './src/common'),
       '@main': path.resolve(__dirname, './src/apps/main'),
       '@admin': path.resolve(__dirname, './src/apps/admin')
     }

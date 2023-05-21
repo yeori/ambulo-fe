@@ -32,7 +32,11 @@
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.15.1",
+    "@types/marked": "^5.0.0",
     "axios": "^1.4.0",
+    "bootstrap": "^5.2.3",
+    "dexie": "^3.2.3",
+    "marked": "^5.0.2",
     "page": "^1.11.6"
   }
 }
