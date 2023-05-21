@@ -1,10 +1,14 @@
-export class GooglePos implements GooglePos {
-  constructor(private readonly geoPos: GeolocationPosition) {}
-  get lat() {
-    return this.geoPos.coords.latitude
-  }
-  get lng() {
-    return this.geoPos.coords.longitude
+import type { IMapPos, PathPoint } from '../IMapSpec.js'
+
+export class GooglePos implements PathPoint {
+  lat: number
+  lng: number
+  distance: number
+  order: number
+  milestone: boolean
+  constructor({ lat, lng }) {
+    this.lat = lat
+    this.lng = lng
   }
   get alt() {
     return undefined

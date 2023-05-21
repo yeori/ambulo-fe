@@ -1,13 +1,16 @@
-import type { IMapPos } from '../IMapSpec.js'
+import type { IMapPos, PathPoint } from '../IMapSpec.js'
 
-export class KakaoPos implements IMapPos {
-  constructor(private readonly geoPos: GeolocationPosition) {}
-  get lat() {
-    return this.geoPos.coords.latitude
+export class KakaoPos implements PathPoint {
+  lat: number
+  lng: number
+  distance: number
+  order: number
+  milestone: boolean
+  constructor({ lat, lng }) {
+    this.lat = lat
+    this.lng = lng
   }
-  get lng() {
-    return this.geoPos.coords.longitude
-  }
+
   get alt() {
     return undefined
   }

@@ -1,15 +1,22 @@
 <script lang="ts">
   import { writable, type Writable } from 'svelte/store'
   import { onDestroy, onMount } from 'svelte'
-  import env from '@/service/env/index.js'
   import userLocation, {
     locationStore
   } from '@/apps/main/component/geolocation/user-location.js'
   import { AmbuloSession } from '@main/session/AmbuloSession.js'
   import type { Unsubscriber } from 'svelte/store'
-  import type { IMapSpec } from './IMapSpec.js'
-  // import kakaoInstaller from './kakao/index.js'
+  import type { IMapPos, IMapSpec } from './IMapSpec.js'
+  import api from '@/service/api/index.js'
+  import { Journey } from '@/common/entity/journey/Journey.js'
   import googleInstaller from './google/index.js'
+  import kakaoInstaller from './kakao/index.js'
+
+  const DEFAULT_PLACES = [
+    { region: 'busan', lat: 35.10077, lng: 129.03376 },
+    { region: 'suncheon', lat: 34.92809, lng: 127.50398 },
+    { region: 'seoul', lat: 37.57848, lng: 126.97589 }
+  ]
 
   let el: HTMLElement
   let mapHandle: IMapSpec = undefined
@@ -26,25 +33,57 @@
     unsub = locationStore.subscribe((state) => {
       if (state.pos) {
         $session.mark(state.pos.coords)
-        userPath.addPosition(state.pos)
+        const { latitude: lat, longitude: lng } = state.pos.coords
+        userPath.addPosition({ lat, lng } as IMapPos)
       }
     })
   }
   const stopSession = () => {
     userLocation.stop()
     unsub()
+    unsub = undefined
   }
 
   let positionVisible = false
   const locationLoader = geo
-    .checkPermission()
+    .requestPermission()
     .then((pos: GeolocationPosition) => pos)
   onMount(() => {
-    mapHandle = googleInstaller.installSdk(el, locationLoader)
-    // mapHandle = kakaoInstaller.installSdk(el, locationLoader)
+    // googleInstaller
+    //   .installSdk(el, locationLoader, {
+    //     lat: 35.110036569346555,
+    //     lng: 129.10929084725
+    //   })
+    //   .then((handle) => {
+    //     mapHandle = handle
+    //     api.journey.get(1340).then((res) => {
+    //       const journeyPath = mapHandle.createJourneyPath(
+    //         new Journey(res.journey)
+    //       )
+    //     })
+    //   })
+    kakaoInstaller
+      .installSdk(el, locationLoader, {
+        lat: 35.110036569346555,
+        lng: 129.10929084725
+      })
+      .then((handle) => {
+        mapHandle = handle
+        api.journey.get(1429).then((res) => {
+          const journeyPath = mapHandle.createJourneyPath(
+            new Journey(res.journey)
+          )
+        })
+      })
   })
   onDestroy(() => {
+    if (unsub) {
+      unsub()
+    }
     userLocation.stop()
+    if ($session) {
+      $session.close()
+    }
   })
 </script>
 

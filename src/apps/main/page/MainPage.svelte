@@ -1,37 +1,36 @@
 <script lang="ts">
-  import { GeoLocation } from '@main/component/geolocation/GeoLocation.js'
-  import MapView from '../component/map/MapView.svelte'
+  // import SouthKoreaMap from '@/common/map/SouthKoreaMap.svelte'
+  import BottomSheet from '../component/sheet/BottomSheet.svelte'
+  import ProvinceView from '@main/domain/province/ProvinceView.svelte'
+  import type { Province } from '@/apps/main/domain/province/province-store.js'
+  import RegionSlideView from '@main/component/RegionSlideView.svelte'
+  import { provinceStore } from '@main/domain/province/province-store.js'
+  import { appConfigDao } from '@/common/entity/index.js'
 
-  const geo = new GeoLocation()
-  const myloc = () => {
-    geo
-      .checkPermission()
-      .then((pos: GeolocationPosition) => {
-        const { coords, timestamp } = pos
-        const {
-          accuracy,
-          altitude: alt,
-          altitudeAccuracy,
-          heading,
-          latitude: lat,
-          longitude: lng,
-          speed
-        } = coords
-        console.table(coords)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+  appConfigDao.isFirstOpen().then((firstOpen: boolean) => {
+    console.log(firstOpen)
+  })
+
+  let activeProvince: Province
+  const setActiveProvince = (e) => {
+    activeProvince = e.detail
+    $provinceStore.setActiveProvince(activeProvince)
   }
 </script>
 
 <section>
-  <button class="nude" on:click={myloc}>geo</button>
-  <MapView />
+  <!-- <SouthKoreaMap on:province={setActiveProvince} /> -->
+  <RegionSlideView on:province={setActiveProvince} />
+  {#if activeProvince}
+    <ProvinceView province={activeProvince} />
+  {/if}
 </section>
 
 <style lang="scss">
   section {
     flex: 1 1 auto;
+    .pad {
+      height: 60px;
+    }
   }
 </style>

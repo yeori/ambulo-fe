@@ -1,3 +1,6 @@
+import type { Journey } from '@/common/entity/journey/Journey.js'
+import type { JourneyPath, JourneyPathOption } from './JourneyPath.js'
+
 export interface IMapPos {
   lat: number
   lng: number
@@ -7,11 +10,24 @@ export interface IMapPos {
    */
   toLatLng(): any
 }
+
+export interface PathPoint extends IMapPos {
+  distance: number
+  order: number
+  milestone: boolean
+}
 export interface IMapPath {
-  addPosition(pos: GeolocationPosition): IMapPath
+  setMileStoneVisible(arg0: boolean): unknown
+  getDistance(): number
+  getPoints(): PathPoint[]
+  addListener(eventName: string, callback: (e: any) => void): void
+  addPosition(pos: IMapPos): IMapPath
+  setActive(active: boolean): IMapPath
 }
 export interface IMapSpec {
-  createPath(): IMapPath
+  createPosition(coord: { lat: number; lng: number }): IMapPos
+  createJourneyPath(journey: Journey, option?: JourneyPathOption): JourneyPath
+  createPath(points?: IMapPos[], pathOption?: any, hoverOption?: any): IMapPath
   /**
    *
    * @param pos {lat, lng} location info

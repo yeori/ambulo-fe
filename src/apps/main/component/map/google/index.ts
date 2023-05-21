@@ -6,7 +6,8 @@ const ID_GOOGLEMAP_SDK = '_GOOGLE_SDK_'
 
 const installSdk = (
   el: HTMLElement,
-  locationLoader: Promise<GeolocationPosition>
+  locationLoader: Promise<GeolocationPosition>,
+  latlng: { lat: number; lng: number }
 ) => {
   const loader = new Loader({
     apiKey: env.gmapApiKey,
@@ -17,11 +18,13 @@ const installSdk = (
 
   console.log('[gmap key]', env.gmapApiKey)
   const mapHandle = new GoogleMap(el, env.gmapApiKey)
-  Promise.all([locationLoader, gmapPromise]).then(([geoPos]) => {
-    const pos = new GooglePos(geoPos)
+  return gmapPromise.then(() => {
+    const pos = new GooglePos(latlng)
     mapHandle.render(pos, 18)
+    console.log('[DONE]')
+    return mapHandle
   })
-  return mapHandle
+  // return mapHandle
 }
 
 export default {

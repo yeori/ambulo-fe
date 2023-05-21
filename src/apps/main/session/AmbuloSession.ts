@@ -30,4 +30,8 @@ export class AmbuloSession {
     })
     console.log('[# of moves]', this.positions)
   }
+  close() {
+    this.positions.splice(0, this.positions.length)
+    console.log('[sessoin l/')
+  }
 }

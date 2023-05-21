@@ -1,5 +1,31 @@
-import type { IMapPos, IMapSpec } from '../IMapSpec.js'
+import type { Journey } from '@/common/entity/journey/Journey.js'
+import type { IMapPath, IMapPos, IMapSpec, PathPoint } from '../IMapSpec.js'
 import { KakaoPath } from './KakaoPath.js'
+import { KakaoPos } from './KakaoPos.js'
+import { JourneyPath } from '../JourneyPath.js'
+
+const calcuateDistance = (points: IMapPos[]) => {
+  const distLine = new kakao.maps.Polyline({ path: [] })
+  let prev = points[0] as PathPoint
+  prev.order = 0
+  prev.distance = 0
+  prev.milestone = true
+  let milestone = 1000 // m
+  for (let k = 1; k < points.length; k++) {
+    const cur = points[k] as PathPoint
+    cur.order = k
+    distLine.setPath([prev.toLatLng(), cur.toLatLng()])
+    cur.distance = prev.distance + distLine.getLength()
+    if (prev.distance <= milestone && milestone <= cur.distance) {
+      const mid = (prev.distance + cur.distance) / 2
+      const target = mid >= milestone ? prev : cur
+      target.milestone = true
+      milestone += 1000
+    }
+    prev = cur
+  }
+  ;(points[points.length - 1] as PathPoint).milestone = true
+}
 
 export class KakaoMap implements IMapSpec {
   pos: IMapPos
@@ -28,11 +54,32 @@ export class KakaoMap implements IMapSpec {
     } as kakao.maps.KakoMapOption)
     return this
   }
-
-  createPath() {
+  createPosition(coord: { lat: number; lng: number }): IMapPos {
+    return new KakaoPos(coord)
+  }
+  createPath(points: IMapPos[] = [], pathOption, hoverOption) {
     const uuid = Math.random().toString(36).substring(2)
-    const path = new KakaoPath(uuid, this.mapHandle)
+    calcuateDistance(points)
+    const path = new KakaoPath(uuid, this.mapHandle, points as PathPoint[])
+    path.setStyle(
+      pathOption as kakao.maps.PolylineOption,
+      hoverOption as kakao.maps.PolylineOption
+    )
     this.pathes.push(path)
+    return path
+  }
+  createJourneyPath(journey: Journey): JourneyPath {
+    const path = new JourneyPath(this, journey)
+    // const journeyPath = []
+    // journey.eachCourse((course) => {
+    //   const path = new KakaoPath(journey.uuid, this.mapHandle, course.coords)
+    //   // course.coords.forEach((c) => {
+    //   //   path.addPosition(c)
+    //   // })
+    //   this.pathes.push(path)
+    //   journeyPath.push(path)
+    // })
+
     return path
   }
 }

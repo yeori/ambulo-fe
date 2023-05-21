@@ -6,20 +6,45 @@
   src: url(/fonts/lato-900i.ttf) format('truetype');
 }
 
+@font-face {
+  font-family: 'Nanum Gothic', sans-serif;
+  font-weight: 400;
+  font-display: block;
+  src: url(/fonts/nanum-gothic-400.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Nanum Gothic', sans-serif;
+  font-weight: 700;
+  font-display: block;
+  src: url(/fonts/nanum-gothic-700.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Nanum Gothic', sans-serif;
+  font-weight: 800;
+  font-display: block;
+  src: url(/fonts/nanum-gothic-800.ttf) format('truetype');
+}
+
+@import './markdown.scss';
+
 :root {
   // color-scheme: light dark;
   // color: rgba(255, 255, 255, 0.87);
   // background-color: #242424;
-
+  font-size: 14px;
+  font-family: 'Nanum Gothic', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-
+  -webkit-tap-highlight-color: transparent;
   user-select: none;
 }
-
+* {
+  box-sizing: border-box;
+}
 html,
 body {
   height: 100%;
@@ -29,6 +54,7 @@ body {
   position: absolute;
   inset: 0;
   height: 100%;
+  overflow-y: auto;
 }
 
 ::-webkit-scrollbar {
@@ -64,8 +90,80 @@ button {
     background-color: transparent;
     outline: none;
     border: none;
-    background-color: white;
-    padding: 4px 8px;
+    padding: 8px 16px;
     cursor: pointer;
+    font-size: 1.15rem;
+    font-weight: 400;
+  }
+  &:active {
+    transform: translate(1px, 1px);
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+p {
+  margin: 0;
+}
+
+.imgview {
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.shadow {
+  &-1 {
+    box-shadow: 0px 0px 2px #0000006d, 0 0 1px #0000003d;
+  }
+  &-3 {
+    box-shadow: 2px 2px 4px #0000004d, 0 0 2px #0000003d;
+  }
+}
+
+.map {
+  &.milestone {
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 4px;
+    .d {
+      padding: 4px 8px;
+      background-color: white;
+      box-shadow: 0 0 2px #0000008d, 1px 1px 8px #0000004d;
+    }
+    .bar {
+      position: relative;
+      display: block;
+      height: 20px;
+      width: 4px;
+      left: 50%;
+      background-color: #3a3a3a;
+      transform: translateX(-50%);
+      &::after {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        content: '';
+        width: 14px;
+        height: 14px;
+        background-color: #3a3a3a;
+        border-radius: 14px;
+        transform: translate(-50%, 50%) rotateX(55deg);
+        filter: blur(2px);
+        opacity: 0.7;
+      }
+    }
   }
 }

@@ -10,14 +10,21 @@ export class GeoLocation {
   private watchId: number | undefined
   constructor(setting: PositionOptions = DEFAULT_GEO_SETTING) {
     this.setting = setting
-    navigator.permissions.query({ name: 'geolocation' }).then((status) => {
-      this.permStatus = status
-      this.permStatus.addEventListener('change', () => {
-        console.log('[GEO] ', this.permStatus.name, this.permStatus.state)
-      })
+  }
+  queryPermission(): Promise<PermissionState> {
+    return new Promise((resolve, reject) => {
+      navigator.permissions
+        .query({ name: 'geolocation' })
+        .then((status) => {
+          this.permStatus = status
+          resolve(status.state)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     })
   }
-  checkPermission(): Promise<GeolocationPosition> {
+  requestPermission(): Promise<GeolocationPosition> {
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(resolve, reject, this.setting)
     })

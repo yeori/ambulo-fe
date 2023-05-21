@@ -1,0 +1,27 @@
+.markdown {
+  h3 {
+    margin: 16px 0 8px;
+  }
+  ul {
+    font-size: 1rem;
+    line-height: 1.6rem;
+    font-weight: 400;
+    li {
+      margin-top: 4px;
+      position: relative;
+      // &:after,
+      // &:before {
+      //   content: '';
+      //   position: absolute;
+      //   top: -2px;
+      //   left: 0;
+      //   width: 6px;
+      //   height: 1px;
+      //   background-color: #268cec;
+      // }
+      // &:after {
+      //   left: 8px;
+      // }
+    }
+  }
+}
