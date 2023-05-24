@@ -1,7 +1,7 @@
 // import { db } from '../index.js'
 import type { AmbuloDb } from '@/common/entity/index.js'
 import type { Table } from 'dexie'
-import type Region from './Region.js'
+import { Region, type Sido } from './Region.js'
 
 export class RegionDao {
   tableName: string = 'regions'
@@ -24,7 +24,9 @@ export class RegionDao {
     // this.table.add(region)
   }
   findRegions() {
-    return this.table.toArray()
+    return this.table
+      .toArray()
+      .then((regions) => regions.map((region) => new Region(region)))
   }
 }
 

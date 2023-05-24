@@ -18,7 +18,7 @@
   import { Debounce } from '@/service/util/debounce.js'
   import { uiState } from '@main/domain/ui/index.js'
   import router from '@common/router/index.js'
-
+  import { readyStore } from '@entity/index.js'
   let showSplash = undefined
   // console.log(db)
   const initPagination = () => {
@@ -29,7 +29,6 @@
     router.bind('/theme/:themeId', JourneyThemePage)
     page.start()
   }
-  initPagination()
 
   appConfigDao.isFirstOpen().then((first) => {
     showSplash = first
@@ -43,6 +42,13 @@
   onMount(() => {
     const appEl = document.querySelector('#app') as HTMLElement
     debouncer = new Debounce(appEl, 'scroll', handleScroll, 10)
+
+    readyStore.subscribe((state) => {
+      if (state.all) {
+        setTimeout(initPagination, 100)
+        // initPagination()
+      }
+    })
   })
 </script>
 

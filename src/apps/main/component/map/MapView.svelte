@@ -7,16 +7,18 @@
   import { AmbuloSession } from '@main/session/AmbuloSession.js'
   import type { Unsubscriber } from 'svelte/store'
   import type { IMapPos, IMapSpec } from './IMapSpec.js'
-  import api from '@/service/api/index.js'
-  import { Journey } from '@/common/entity/journey/Journey.js'
   import googleInstaller from './google/index.js'
   import kakaoInstaller from './kakao/index.js'
+  import { mapStore } from './map-store.js'
 
   const DEFAULT_PLACES = [
     { region: 'busan', lat: 35.10077, lng: 129.03376 },
     { region: 'suncheon', lat: 34.92809, lng: 127.50398 },
     { region: 'seoul', lat: 37.57848, lng: 126.97589 }
   ]
+
+  const shapeStore = writable([] as any[])
+  const mapContext = mapStore.getMapContext()
 
   let el: HTMLElement
   let mapHandle: IMapSpec = undefined
@@ -44,6 +46,11 @@
     unsub = undefined
   }
 
+  const themeClicked = (elem) => {
+    // console.log(elem)
+    mapContext.on('click', elem)
+  }
+
   let positionVisible = false
   const locationLoader = geo
     .requestPermission()
@@ -62,24 +69,25 @@
     //       )
     //     })
     //   })
-    kakaoInstaller
-      .installSdk(el, locationLoader, {
+    /*
+    {
         lat: 35.110036569346555,
         lng: 129.10929084725
-      })
-      .then((handle) => {
-        mapHandle = handle
-        api.journey.get(1429).then((res) => {
-          const journeyPath = mapHandle.createJourneyPath(
-            new Journey(res.journey)
-          )
-        })
-      })
+      }
+      */
+    kakaoInstaller.installSdk(el, locationLoader).then((handle) => {
+      mapHandle = handle
+      const pos = mapHandle.createPosition(mapContext.getInitialPos())
+      mapHandle.render(pos, 6)
+      mapContext.installMapDriver(mapHandle, shapeStore)
+      mapContext.start()
+    })
   })
   onDestroy(() => {
     if (unsub) {
       unsub()
     }
+    mapContext.dispose()
     userLocation.stop()
     if ($session) {
       $session.close()
@@ -88,6 +96,19 @@
 </script>
 
 <section class="abs-fill">
+  <div class="shape-holder">
+    {#each $shapeStore as shape (shape.id)}
+      <div
+        id={shape.id}
+        class="shape jrtheme start theme-{shape.data
+          .themeRef} {shape.data.getDifficultyText()}"
+        on:click={() => themeClicked(shape)}
+        on:keyup={() => themeClicked(shape)}
+      >
+        <h5><span>{shape.data.getMinifiedName()}</span></h5>
+      </div>
+    {/each}
+  </div>
   <div bind:this={el} class="abs-fill" />
   {#if positionVisible}
     <div
@@ -116,6 +137,14 @@
 
 <style lang="scss">
   section {
+    .shape-holder {
+      position: absolute;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+      top: -1;
+      left: -1;
+    }
     .user-pos {
       position: fixed;
       left: 50%;

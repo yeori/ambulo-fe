@@ -3,6 +3,9 @@
   import journeyService from '@/common/entity/journey/JourneyService.js'
   import JourneyCardView from '@/common/entity/journey/JourneyCardView.svelte'
   import { fade } from 'svelte/transition'
+  import { createEventDispatcher } from 'svelte'
+
+  const dispatch = createEventDispatcher()
 
   export let province
 
@@ -27,7 +30,10 @@
         {/if}
         {#each journeys as jr}
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-            <JourneyCardView journey={jr} />
+            <JourneyCardView
+              journey={jr}
+              on:click={() => dispatch('journey', jr)}
+            />
           </div>
         {/each}
       </div>

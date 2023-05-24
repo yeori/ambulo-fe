@@ -6,8 +6,7 @@ const ID_KAKAO_SDK = '_KAKAO_SDK_'
 
 const installSdk = (
   el: HTMLElement,
-  locationLoader: Promise<GeolocationPosition>,
-  latlng: { lat: number; lng: number }
+  locationLoader: Promise<GeolocationPosition>
 ) => {
   const mapHandle = new KakaoMap(el, env.kakaoApiKey)
   const scriptLoader = new Promise((ok, fail) => {
@@ -35,8 +34,6 @@ const installSdk = (
   })
 
   return scriptLoader.then(() => {
-    const pos = new KakaoPos(latlng)
-    mapHandle.render(pos, 3)
     return mapHandle
     // return new Promise((resolve) => {
     //   kakao.maps.load(() => {

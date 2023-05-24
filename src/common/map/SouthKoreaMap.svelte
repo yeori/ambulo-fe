@@ -1,10 +1,8 @@
 <script lang="ts">
   // TODO 각 시도별 아이콘 필요함
 
-  import {
-    Province,
-    provinceStore
-  } from '../../apps/main/domain/province/province-store.js'
+  import { Province } from '@main/domain/province/Province.js'
+  import { provinceStore } from '../../apps/main/domain/province/province-store.js'
   import { createEventDispatcher } from 'svelte'
 
   const dispatch = createEventDispatcher()

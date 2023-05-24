@@ -1,4 +1,4 @@
-import Region, { type Sido } from '@/common/entity/region/Region.js'
+import { Region, type Sido } from '@/common/entity/region/Region.js'
 import { GET } from './request.js'
 import { Journey, type JourneyType } from '@/common/entity/journey/Journey.js'
 
@@ -25,7 +25,11 @@ const app = {
     })
 }
 const journey = {
-  get: (journeySeq: number) => GET(`/api/journey/${journeySeq}`),
+  get: (journeySeq: number) =>
+    GET(`/api/journey/${journeySeq}`).then((res) => {
+      res.journey = new Journey(res.journey)
+      return res
+    }),
   summaries: () => GET('/api/journeys/summary')
 }
 

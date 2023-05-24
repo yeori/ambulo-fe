@@ -98,6 +98,16 @@ button {
   &:active {
     transform: translate(1px, 1px);
   }
+  &.blue {
+    background-color: #0069eb;
+    color: white;
+    &:hover {
+      background-color: #367ed6;
+    }
+    &:active {
+      background-color: #0156bd;
+    }
+  }
 }
 
 h1,
@@ -132,22 +142,98 @@ p {
   }
 }
 
-.map {
+.shape {
+  &.jrtheme {
+    background-color: white;
+    padding: 0 6px 0 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 2px #0000008d, 1px 1px 8px #0000004d;
+    position: relative;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    h5 {
+      font-weight: 400;
+    }
+
+    &.easy {
+      &:before {
+        background-color: #00ff00;
+      }
+    }
+    &.medium {
+      &:before {
+        background-color: #ffee00;
+      }
+    }
+    &.hard {
+      &:before {
+        background-color: #ef6200;
+      }
+    }
+    &.extreme {
+      &:before {
+        background-color: #000000;
+      }
+    }
+    &:before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      width: 30px;
+      height: 30px;
+      border-radius: 20px;
+      display: flex;
+    }
+    &:after {
+      content: '';
+      font-weight: 500;
+      font-size: 11px;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 22px;
+      height: 22px;
+
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+    }
+    &.theme-100:after {
+      background-color: #017b09;
+      content: '해';
+    }
+    &.theme-200:after {
+      background-color: #0e80ff;
+      content: '남';
+    }
+    &.theme-300:after {
+      background-color: #d24403;
+      content: '서';
+    }
+  }
   &.milestone {
     display: flex;
     flex-direction: column;
 
     border-radius: 4px;
     .d {
-      padding: 4px 8px;
-      background-color: white;
-      box-shadow: 0 0 2px #0000008d, 1px 1px 8px #0000004d;
+      text-shadow: 1px 1px 1px #000000, 1px -1px 1px #000, -1px -1px 1px #000,
+        -1px 1px 1px #000, 0px 0px 4px #000;
+      font-size: 12px;
+      color: white;
+      font-weight: 900;
     }
     .bar {
       position: relative;
       display: block;
       height: 20px;
-      width: 4px;
+      width: 2px;
       left: 50%;
       background-color: #3a3a3a;
       transform: translateX(-50%);
@@ -156,14 +242,19 @@ p {
         bottom: 0;
         left: 50%;
         content: '';
-        width: 14px;
-        height: 14px;
+        width: 10px;
+        height: 10px;
         background-color: #3a3a3a;
         border-radius: 14px;
-        transform: translate(-50%, 50%) rotateX(55deg);
-        filter: blur(2px);
-        opacity: 0.7;
+        transform: translate(-50%, 50%) rotateX(45deg);
       }
+    }
+  }
+}
+.mg {
+  &-r {
+    &-1rem {
+      margin-right: 1rem;
     }
   }
 }

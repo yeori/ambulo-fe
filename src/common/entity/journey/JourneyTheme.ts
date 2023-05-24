@@ -1,27 +1,7 @@
+import type { Journey } from './Journey.js'
 import type { RouteProvider } from './RouteConst.js'
 
-/*
-
-provider
-: 
-"U"
-routeDesc
-: 
-"지정된 theme이 없는 경우"
-routeIndex
-: 
-"T_NO_THEME"
-routeName
-: 
-"없음"
-routeType
-: 
-"W"
-seq
-: 
-1
-*/
-export type JourenyThemeType = {
+export interface IJourneyTheme {
   pk: number
   seq: number
   routeName: string
@@ -29,9 +9,10 @@ export type JourenyThemeType = {
   routeIndex: string
   routeDesc: string
   provider: RouteProvider
+  countDistance(): number
 }
 
-export class JourneyTheme {
+export class JourneyTheme implements IJourneyTheme {
   pk: number
   seq: number
   routeName: string
@@ -39,14 +20,29 @@ export class JourneyTheme {
   routeIndex: string
   routeDesc: string
   provider: RouteProvider
-  constructor(data: JourenyThemeType) {
+  journyes: Journey[] = []
+  constructor(data: IJourneyTheme) {
     Object.keys(data).forEach((prop) => {
       this[prop] = data[prop]
     })
   }
+  setJourneys(journeys: Journey[]) {
+    if (journeys && journeys.length > 0) {
+      this.journyes = journeys
+    }
+  }
+  countDistance(): number {
+    return this.journyes.reduce((dist, jr) => dist + jr.officialDistance, 0)
+  }
+  equals(other: JourneyTheme): boolean {
+    return other && this.routeIndex === other.routeIndex
+  }
 
-  static wrap(data: JourenyThemeType): JourneyTheme {
+  static wrap(data: IJourneyTheme): JourneyTheme {
     data.pk = undefined
     return new JourneyTheme(data)
+  }
+  static selectWrap(elems: IJourneyTheme[]): JourneyTheme[] {
+    return elems.map((elem) => new JourneyTheme(elem))
   }
 }

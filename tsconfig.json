@@ -19,7 +19,9 @@
     "paths": {
       "@/*": ["./src/*"],
       "@main/*": ["./src/apps/main/*"],
-      "@common/*": ["./src/common/*"]
+      "@common/*": ["./src/common/*"],
+      "@entity/*": ["./src/common/entity/*"],
+      "@router": ["./src/common/router/index.js"]
     }
   },
   "include": [

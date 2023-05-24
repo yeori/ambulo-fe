@@ -66,12 +66,12 @@ export class KakaoPath implements IMapPath {
   setMileStoneVisible(visible: boolean): IMapPath {
     if (visible) {
       this.milestones = this.points
-        .filter((p) => p.milestone)
+        .filter((p, idx) => idx > 0 && p.milestone)
         .map(
           (p) =>
             new kakao.maps.CustomOverlay({
               map: this.mapHandle,
-              content: `<div class="map milestone"><span class="d">${(
+              content: `<div class="shape milestone"><span class="d">${(
                 p.distance / 1000
               ).toFixed(1)}km</span><span class="bar"/></div>`,
               position: p.toLatLng(),
@@ -84,5 +84,11 @@ export class KakaoPath implements IMapPath {
       ms.splice(0, ms.length)
     }
     return this
+  }
+  dispose() {
+    ;(this.milestones || []).forEach((ms) => {
+      ms.setMap(null)
+    })
+    this.shape.setMap(null)
   }
 }

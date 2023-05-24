@@ -24,19 +24,15 @@
 
 <nav class:visible={$uiState.scrollTop >= 30}>
   <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <div class="inner">
-          <AmbuloBadge on:click={() => goToMap('/')} />
-          {#if $provinceStore.activeProvince}
+    <div class="inner">
+      <AmbuloBadge on:click={() => goToMap('/')} />
+      <!-- {#if $provinceStore.activeProvince}
             {#key $provinceStore.activeProvince}
               <ProvinceBadge province={$provinceStore.activeProvince} />
             {/key}
           {:else}
             <h3>Ambulo</h3>
-          {/if}
-        </div>
-      </div>
+          {/if} -->
     </div>
   </div>
 </nav>
@@ -51,6 +47,9 @@
     display: flex;
     column-gap: 8px;
     transition: background-color 0.15s cubic-bezier(0.075, 0.82, 0.165, 1);
+    .container {
+      padding: 0;
+    }
     &.visible {
       background-color: white;
       box-shadow: 0 0 8px #0000004d, 0 0 2px #00000088;

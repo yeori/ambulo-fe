@@ -1,4 +1,4 @@
 export const enum RouteProvider {
-  D,
-  U
+  D = 'D',
+  U = 'U'
 }

@@ -8,7 +8,6 @@ export class RegionService {
 
     // })
   }
-
   findRegions() {
     return regionDao.findRegions()
   }

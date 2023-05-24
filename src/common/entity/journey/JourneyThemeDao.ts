@@ -1,5 +1,5 @@
 import type { AmbuloDb } from '@/common/entity/index.js'
-import type { JourneyTheme } from './JourneyTheme.js'
+import { JourneyTheme } from './JourneyTheme.js'
 import type { Table } from 'dexie'
 
 export class JourneyThemeDao {
@@ -16,6 +16,12 @@ export class JourneyThemeDao {
     return this.table.bulkPut(journeyThemes)
   }
   findThemes(): Promise<JourneyTheme[]> {
-    return this.table.toArray()
+    return this.table.toArray().then(JourneyTheme.selectWrap)
+  }
+  findTheme(column: string, value: any) {
+    return this.table
+      .where(column)
+      .equals(value)
+      .toArray(JourneyTheme.selectWrap)
   }
 }

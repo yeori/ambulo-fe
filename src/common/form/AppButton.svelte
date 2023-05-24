@@ -17,15 +17,5 @@
     &.round {
       border-radius: 48px;
     }
-    &.blue {
-      background-color: #0069eb;
-      color: white;
-      &:hover {
-        background-color: #367ed6;
-      }
-      &:active {
-        background-color: #0156bd;
-      }
-    }
   }
 </style>

@@ -1,10 +1,24 @@
 import { Course, type CourseType } from '../course/Course.js'
-import type { RouteProvider } from './RouteConst.js'
+import { RouteProvider } from './RouteConst.js'
 
 // const enum Provider {
 //   D,
 //   U
 // }
+
+const enum DIFFICULTY {
+  EASY = 'easy',
+  MEDUIM = 'medium',
+  HARD = 'hard',
+  EXTREME = 'extreme'
+}
+const DiffMap = [
+  DIFFICULTY.EASY,
+  DIFFICULTY.MEDUIM,
+  DIFFICULTY.HARD,
+  DIFFICULTY.EXTREME
+]
+
 export type JourneyType = {
   courseIndex: string
   courses: CourseType[]
@@ -20,6 +34,7 @@ export type JourneyType = {
   provider: RouteProvider
 }
 export class Journey {
+  pk: number
   courseIndex: string
   courses: Course[]
   creationTime: number
@@ -46,8 +61,36 @@ export class Journey {
       }
     })
   }
+
   eachCourse(callback: (course: CourseType) => void) {
     this.courses.forEach(callback)
+  }
+  getDifficultyText(): DIFFICULTY {
+    return DiffMap[this.officialDifficulty - 1]
+  }
+  getMinifiedName() {
+    if (this.provider === RouteProvider.D) {
+      // XXXX길 NN코스
+      // XXXX길 지선NN코스
+      // XXXX길 NN코스 주석이름
+      // XXXX길 NN코스(주의사항) : 해파랑길 50코스
+      const { name } = this
+
+      // 'XXX'  'NN코스...'
+      const [left, right] = name.split('길 ').map((t) => t.trim())
+
+      // ('NN'|'지선NN') , etc
+      const [courseNUm, etc] = right.split('코스').map((t) => t.trim())
+      return courseNUm + '코스'
+    } else {
+      return this.name
+    }
+  }
+  getStartPos() {
+    return this.courses[0].startPos
+  }
+  equals(other: Journey) {
+    return this.courseIndex === other.courseIndex
   }
 }
 const retrieveRegionSeq = (courses: Course[]): number[] => {

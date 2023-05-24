@@ -1,18 +1,8 @@
 import { get, writable } from 'svelte/store'
-import i18n from '@/common/i18n/index.js'
+import { Province } from './Province.js'
 import regionService from '@/common/entity/region/RegionService.js'
-import type Region from '@/common/entity/region/Region.js'
+import type { Region } from '@/common/entity/region/Region.js'
 import { liveQuery } from 'dexie'
-const toPathForm = (path: string): PathForm => {
-  const p = path.indexOf(' ')
-  const [x, y] = path
-    .substring(0, p)
-    .trim()
-    .split(',')
-    .map((str) => Number.parseFloat(str))
-  const value = path.substring(p).trim()
-  return { x, y, value }
-}
 
 const provinceQuery = liveQuery(() => regionService.findRegions())
 
@@ -20,52 +10,6 @@ provinceQuery.subscribe((regions) => {
   // console.log('[PROVINCES]', regions)
   get(provinceStore).bindRegions(regions)
 })
-export type PathForm = {
-  x: number
-  y: number
-  value: string
-}
-export type ProvinceType = {
-  id: string
-  name: string
-  pathes: string[]
-}
-
-export type ProvinceTheme = {
-  bgc: string
-  fgc: string
-}
-
-export class Province {
-  readonly id: string
-  readonly _name: string
-  leadingPos: string
-  pathes: Array<PathForm>
-  region: Region
-  theme: ProvinceTheme
-  active: boolean = false
-  constructor({ id, name, pathes }: ProvinceType, theme: ProvinceTheme) {
-    this.id = id
-    this._name = name
-    this.pathes = pathes.map((path) => toPathForm(path))
-    this.region = undefined
-    this.theme = theme
-    this.active = false
-  }
-  get name() {
-    return i18n.parse(`@province.${this._name}`)
-  }
-  toPathText() {
-    return this.pathes
-      .map((path) => `m ${path.x},${path.y} ${path.value} z`)
-      .join(' ')
-  }
-  getOffetPath() {
-    return this.pathes
-      .map((path) => `m ${path.x},${path.y} ${path.value} z`)
-      .join(' ')
-  }
-}
 
 const provinces = [
   new Province(
@@ -313,11 +257,20 @@ export class ProvinceSet {
       )
       province.region = region
     })
-    console.log(this.provinces)
+    // console.log(this.provinces)
   }
   setActiveProvince(province: Province) {
     provinceStore.update((store) => {
       const idx = this.provinces.findIndex((p) => p === province)
+      if (idx >= 0) {
+        this.activeProvince = this.provinces[idx]
+      }
+      return store
+    })
+  }
+  setActiveRegion(region: Region) {
+    provinceStore.update((store) => {
+      const idx = this.provinces.findIndex((p) => p.region.equals(region))
       if (idx >= 0) {
         this.activeProvince = this.provinces[idx]
       }

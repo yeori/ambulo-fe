@@ -50,6 +50,7 @@ export class JourneyPath {
       path.addListener('click', (e) => {
         this.setActiveCourse(path)
       })
+      this.setActiveCourse(path)
       this.courses.push(path)
       // if (option.posVisible) {
       //   this.points.push(...points)
@@ -57,8 +58,6 @@ export class JourneyPath {
     })
   }
   setActiveCourse(course: IMapPath) {
-    // console.log('[event]', e)
-    console.log('[path]', course)
     if (this.activeCourse) {
       this.activeCourse.setActive(false)
       this.activeCourse.setMileStoneVisible(false)
@@ -74,5 +73,10 @@ export class JourneyPath {
     //   lng: latLng.getLng ? latLng.getLng() : latLng.lng()
     // } as IMapPos)
     // console.log(points[index], course.getDistance())
+  }
+  dispose() {
+    this.courses.forEach((path) => {
+      path.dispose()
+    })
   }
 }

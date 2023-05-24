@@ -1,22 +1,23 @@
 <script lang="ts">
-  import {
-    Province,
-    provinceStore
-  } from '@/apps/main/domain/province/province-store.js'
+  import { Province } from '@/apps/main/domain/province/Province.js'
+  import { provinceStore } from '@/apps/main/domain/province/province-store.js'
   import type { Journey } from '@/common/entity/journey/Journey.js'
   import journeyService from '@/common/entity/journey/JourneyService.js'
   import regionService from '@/common/entity/region/RegionService.js'
   import { liveQuery } from 'dexie'
-  import { createEventDispatcher, onDestroy } from 'svelte'
+  import { createEventDispatcher, onDestroy, onMount } from 'svelte'
   import ActionIcon from '@/common/ActionIcon.svelte'
   import AppIcon from '@/common/AppIcon.svelte'
   import { uiState } from '@main/domain/ui/index.js'
   import { fade, fly } from 'svelte/transition'
   import util from '@/service/util/index.js'
+
+  export let province: Province
+
   const dispatch = createEventDispatcher()
 
   const regions = liveQuery(() => regionService.findRegions())
-  let provinceIndex = 7
+  let provinceIndex = -1
   let activeProvince: Province = undefined
   let journeys: Journey[] = []
 
@@ -39,15 +40,17 @@
     loadJourneys(activeProvince)
   }
 
-  const logoUrl = (province) => {
-    const code = province.region.regionCode
-    const ext = code === 'sejong' ? 'jpg' : code === 'gwangju' ? 'png' : 'svg'
-    return `/images/logo/logo-${code}.${ext}`
-  }
-
   const unsub = regions.subscribe(() => {
-    provinceIndex = util.rand.nextInt($provinceStore.provinces.length)
+    if (provinceIndex === -1) {
+      provinceIndex = util.rand.nextInt($provinceStore.provinces.length)
+    }
     pickRandom(0)
+  })
+
+  onMount(() => {
+    if (province) {
+      provinceIndex = $provinceStore.provinces.findIndex((p) => p === province)
+    }
   })
 
   onDestroy(() => {
@@ -59,7 +62,7 @@
   <div class="sticky" in:fly={{ y: -50, duration: 250, delay: 150 }}>
     <div class="container">
       <h3>
-        <span class="name">{activeProvince.name}</span>
+        <span class="name">{activeProvince?.shortName}</span>
       </h3>
       <ActionIcon
         on:click={() => pickRandom(-1)}
@@ -77,17 +80,17 @@
             {#key activeProvince}
               <div
                 class="bg-logo"
-                style={`background-image: url(${logoUrl(activeProvince)})`}
+                style={`background-image: url(${activeProvince.getLogoUrl()})`}
               />
               <div
                 in:fly|local={flyOption}
                 out:fade={{ duration: 0 }}
                 class="imgview"
-                style={`background-image: url(${logoUrl(activeProvince)})`}
+                style={`background-image: url(${activeProvince.getLogoUrl()})`}
               />
             {/key}
             <h3>
-              <span class="name">{activeProvince.name}</span><ActionIcon
+              <span class="name">{activeProvince.shortName}</span><ActionIcon
                 on:click={() => pickRandom(-1)}
                 size="md"
                 icon="chevron_left_400"

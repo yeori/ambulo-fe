@@ -2,6 +2,8 @@
   import type { Journey } from './Journey.js'
   import { slide } from 'svelte/transition'
   import md from '@/common/md/index.js'
+  import ActionIcon from '@/common/ActionIcon.svelte'
+
   export let journey: Journey
   export let descVisible: boolean = true
 
@@ -17,7 +19,15 @@
     class="bg imgview"
     style="background-image: url(/images/graphic/g01.jpg);"
   >
-    <h3><span>{journey.name}</span></h3>
+    <h3>
+      <span class="name">{journey.name}</span><ActionIcon
+        radius="0"
+        theme="blue"
+        color="white"
+        icon="map_off"
+        on:click
+      />
+    </h3>
   </div>
   <div class="desc">
     {#if descVisible || unfoldDesc}
@@ -46,7 +56,12 @@
         bottom: 0;
         background-color: brown;
         color: white;
-        padding: 6px 12px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        .name {
+          padding: 4px 8px;
+        }
       }
     }
     .desc {

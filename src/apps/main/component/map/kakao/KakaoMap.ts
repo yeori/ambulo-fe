@@ -1,8 +1,15 @@
 import type { Journey } from '@/common/entity/journey/Journey.js'
-import type { IMapPath, IMapPos, IMapSpec, PathPoint } from '../IMapSpec.js'
+import type {
+  IMapPath,
+  IMapPos,
+  IMapSpec,
+  OverayOption,
+  PathPoint
+} from '../IMapSpec.js'
 import { KakaoPath } from './KakaoPath.js'
 import { KakaoPos } from './KakaoPos.js'
 import { JourneyPath } from '../JourneyPath.js'
+import type { Writable } from 'svelte/store'
 
 const calcuateDistance = (points: IMapPos[]) => {
   const distLine = new kakao.maps.Polyline({ path: [] })
@@ -27,12 +34,17 @@ const calcuateDistance = (points: IMapPos[]) => {
   ;(points[points.length - 1] as PathPoint).milestone = true
 }
 
+type IShape = {
+  type: 'overlay' | 'path'
+  value: any
+}
 export class KakaoMap implements IMapSpec {
   pos: IMapPos
   apiKey: string
   zoom: number
   mapHandle: any
   pathes: KakaoPath[] = []
+  // shapes: Writable<IShape[]>
   constructor(
     readonly el: HTMLElement,
     apiKey: string,
@@ -44,6 +56,19 @@ export class KakaoMap implements IMapSpec {
     this.zoom = zoom
     this.pos = pos
     this.mapHandle = undefined
+  }
+  drawOverlay(option: OverayOption): any {
+    const overlay = new kakao.maps.CustomOverlay({
+      map: this.mapHandle,
+      content: option.content,
+      position: this.createPosition(option.position).toLatLng(),
+      xAnchor: option.anchor.x,
+      yAnchor: option.anchor.y,
+      zIndex: option.zIndex,
+      clickable: option.click
+    })
+
+    return overlay
   }
   render(pos: IMapPos, zoomLevel: number) {
     this.pos = pos
@@ -81,5 +106,9 @@ export class KakaoMap implements IMapSpec {
     // })
 
     return path
+  }
+  setCenter(coord: { lat: number; lng: number }) {
+    const pos = new kakao.maps.LatLng(coord.lat, coord.lng)
+    this.mapHandle.panTo(pos)
   }
 }
