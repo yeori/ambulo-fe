@@ -34,8 +34,9 @@ export type OverayOption = {
   click?: boolean
 }
 export interface IMapSpec {
+  on(arg0: (eventName: any, e: any) => void): unknown
   setCenter(pos: { lat: number; lng: number }): void
-  drawOverlay(option: OverayOption): void
+  drawOverlay(option: OverayOption): any
   createPosition(coord: { lat: number; lng: number }): IMapPos
   createJourneyPath(journey: Journey, option?: JourneyPathOption): JourneyPath
   createPath(points?: IMapPos[], pathOption?: any, hoverOption?: any): IMapPath

@@ -3,14 +3,20 @@ import type { IMapPos, IMapSpec } from './IMapSpec.js'
 export type ShapeGroupOption<T> = {
   name: string
   driver: IMapSpec
-  objects: T[]
+  objects: ShapeObject<T>[]
   posExtractor: (obj: T) => { lat: number; lng: number }
+}
+
+export type ShapeObject<T> = {
+  type: string
+  data: T
+  id: string
 }
 export class ShapeGroup<T> {
   private points: IMapPos[]
   name: string
   driver: IMapSpec
-  objects: T[]
+  objects: ShapeObject<T>[]
   posExtractor: (obj: T) => { lat: number; lng: number }
   shapes: any[]
   constructor({ name, driver, objects, posExtractor }: ShapeGroupOption<T>) {
@@ -19,14 +25,21 @@ export class ShapeGroup<T> {
     this.objects = objects
     this.posExtractor = posExtractor
   }
-  render(contentFn: (obj: T) => string | HTMLElement) {
+  repaint() {
+    setTimeout(() => {
+      this.render()
+    }, 0)
+  }
+  render() {
+    const contentFn = (obj) =>
+      document.querySelector(`#${obj.id}`) as HTMLElement
     this.shapes = this.objects.map((obj) => {
-      const pos = this.posExtractor(obj)
+      const pos = this.posExtractor(obj.data)
       const content = contentFn(obj)
       return this.driver.drawOverlay({
         position: pos,
         anchor: { x: 0.5, y: 1 },
-        content,
+        content: contentFn(obj),
         zIndex: 1000,
         click: false
       })

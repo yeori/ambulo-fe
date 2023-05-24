@@ -187,7 +187,11 @@ declare namespace kakao.maps {
     setRange(): number
   }
   export class Map {
+    getLevel(): number
     constructor(el: HTMLElement, options: KakoMapOption)
+    addListener(eventName: string, callback: (e: any) => void)
+    panTo(pos: LatLng)
+    getCenter(): LatLng
   }
 }
 // declare module KakaoMap {

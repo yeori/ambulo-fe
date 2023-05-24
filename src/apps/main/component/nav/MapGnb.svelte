@@ -1,7 +1,7 @@
 <script lang="ts">
   import AmbuloBadge from '@/common/AmbuloBadge.svelte'
   import router from '@common/router/index.js'
-  import { mapStore, type JourneyContextParam } from '../map/map-store.js'
+  import { mapStore, type JourneyState } from '../map/map-store.js'
   import { onDestroy, setContext } from 'svelte'
   import { journeyStore } from '@/common/entity/journey/journey-store.js'
   import { regionStore } from '@/common/entity/region/region-store.js'
@@ -14,7 +14,6 @@
   import type { JourneyTheme } from '@/common/entity/journey/JourneyTheme.js'
   import RegionBadge from '@/common/badge/RegionBadge.svelte'
   import RegionSelectView from './RegionSelectView.svelte'
-  import { local } from '@/service/storage/index.js'
 
   const floatingBox = {
     visible: false,
@@ -46,38 +45,15 @@
   }
   const changeTheme = (theme: JourneyTheme) => {
     floatingBox.visible = false
-    // floatingBox.component = undefined
-
-    mapStore.setMapContext({
-      themeSeq: theme.seq
-    })
-    // // FIXME
-    // document.location.reload()
+    mapStore.showJouneyTheme(theme.journyes[0], theme)
   }
   const changeRegion = (region: Region) => {
-    // const journey = region.journeys[0]
-    mapStore.setMapContext({
-      regionSeq: region.seq
-    })
+    mapStore.showRegion(region.journeys[0], region)
   }
   const unsub = mapStore.subscribe((store) => {
-    let { journeySeq, regionSeq } = store
-    if (journeySeq !== undefined) {
-      // region의 첫번째
-      journey = journeyStore.findJourney((jr) => jr.seq === journeySeq)
-    }
-    if (regionSeq !== undefined) {
-      region = regionStore.findRegion((rgn) => rgn.seq === regionSeq)
-    }
-
-    if (journey === undefined) {
-      journey = region.journeys[0]
-    }
-    if (region === undefined) {
-      regionSeq = journey.courses[0].startPos.sidoRef
-      region = regionStore.findRegion((rgn) => rgn.seq === regionSeq)
-    }
-    // console.log(region.journeys)
+    const { journeySeq, regionSeq } = store
+    journey = journeyStore.findJourney((jr) => jr.seq === journeySeq)
+    region = regionStore.findRegion((rgn) => rgn.seq === regionSeq)
   })
 
   setContext<{

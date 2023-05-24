@@ -20,10 +20,13 @@
   }
   const openRegionMap = (e) => {
     const journey = e.detail as Journey
-    mapStore.setMapContext({
-      regionSeq: $provinceStore.activeProvince.region.seq,
-      journeySeq: journey.seq
+    mapStore.showRegion(journey, activeProvince.region).then(() => {
+      router.push('/map')
     })
+    // mapStore.setMapContext({
+    //   regionSeq: $provinceStore.activeProvince.region.seq,
+    //   journeySeq: journey.seq
+    // })
     router.push('/map')
   }
 </script>

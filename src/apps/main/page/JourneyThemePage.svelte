@@ -21,11 +21,9 @@
   const openJourneyMap = (e) => {
     console.log(e.detail)
     const journey = e.detail as Journey
-    mapStore.setMapContext({
-      themeSeq: journeyTheme.seq,
-      journeySeq: journey.seq
+    mapStore.showJouneyTheme(journey, journeyTheme).then(() => {
+      router.push('/map')
     })
-    router.push('/map')
   }
   onMount(() => {
     console.log('[params]', $router)

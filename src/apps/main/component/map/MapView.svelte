@@ -10,6 +10,7 @@
   import googleInstaller from './google/index.js'
   import kakaoInstaller from './kakao/index.js'
   import { mapStore } from './map-store.js'
+  import { Debounce } from '@/service/util/debounce.js'
 
   const DEFAULT_PLACES = [
     { region: 'busan', lat: 35.10077, lng: 129.03376 },
@@ -52,6 +53,19 @@
   }
 
   let positionVisible = false
+  let timer
+  const updateViewport = (e) => {
+    mapStore.setViewport((viewport) => {
+      viewport.lat = e.lat
+      viewport.lng = e.lng
+    })
+  }
+  const updateLevel = (e) => {
+    mapStore.setViewport((viewport) => {
+      viewport.level = e.level
+    })
+  }
+
   const locationLoader = geo
     .requestPermission()
     .then((pos: GeolocationPosition) => pos)
@@ -75,10 +89,32 @@
         lng: 129.10929084725
       }
       */
+
+    mapStore.setViewport((viewport) => {
+      const pos = DEFAULT_PLACES[0]
+      const { lat, lng, level } = viewport
+      if (lat === undefined || lng === undefined) {
+        viewport.lat = pos.lat
+        viewport.lng = pos.lng
+      }
+      if (!level) {
+        viewport.level = 6
+      }
+    })
     kakaoInstaller.installSdk(el, locationLoader).then((handle) => {
       mapHandle = handle
-      const pos = mapHandle.createPosition(mapContext.getInitialPos())
-      mapHandle.render(pos, 6)
+      const vp = mapStore.viewport()
+      const pos = mapHandle.createPosition({ ...vp })
+      mapHandle.render(pos, vp.level)
+      mapHandle.on((e) => {
+        const { type } = e
+        if (type === 'center') {
+          clearTimeout(timer)
+          timer = setTimeout(updateViewport, 500, e)
+        } else if (type === 'zoom') {
+          updateLevel(e)
+        }
+      })
       mapContext.installMapDriver(mapHandle, shapeStore)
       mapContext.start()
     })

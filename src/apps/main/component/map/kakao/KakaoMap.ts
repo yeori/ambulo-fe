@@ -42,20 +42,26 @@ export class KakaoMap implements IMapSpec {
   pos: IMapPos
   apiKey: string
   zoom: number
-  mapHandle: any
+  mapHandle: kakao.maps.Map
   pathes: KakaoPath[] = []
+  eventCallback: (e: any, mapHandle: IMapSpec) => void
   // shapes: Writable<IShape[]>
   constructor(
     readonly el: HTMLElement,
     apiKey: string,
     zoom = 5,
-    pos?: IMapPos
+    pos?: IMapPos,
+    eventCallback?: (eventName: string, e?: any, mapHandle?: IMapSpec) => void
   ) {
     this.pos = pos
     this.apiKey = apiKey
     this.zoom = zoom
     this.pos = pos
     this.mapHandle = undefined
+    this.eventCallback = eventCallback || ((_) => {})
+  }
+  on(callback: { (e: any, mapHandle: IMapSpec): void }) {
+    this.eventCallback = callback
   }
   drawOverlay(option: OverayOption): any {
     const overlay = new kakao.maps.CustomOverlay({
@@ -77,6 +83,16 @@ export class KakaoMap implements IMapSpec {
       center: pos.toLatLng(),
       level: this.zoom
     } as kakao.maps.KakoMapOption)
+
+    this.mapHandle.addListener('center_changed', () => {
+      const pos = this.mapHandle.getCenter()
+      const e = { type: 'center', lat: pos.getLat(), lng: pos.getLng() }
+      this.eventCallback(e, this)
+    })
+    this.mapHandle.addListener('zoom_changed', () => {
+      const e = { type: 'zoom', level: this.mapHandle.getLevel() }
+      this.eventCallback(e, this)
+    })
     return this
   }
   createPosition(coord: { lat: number; lng: number }): IMapPos {
