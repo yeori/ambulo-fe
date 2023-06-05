@@ -11,6 +11,10 @@
   import kakaoInstaller from './kakao/index.js'
   import { mapStore } from './map-store.js'
   import { Debounce } from '@/service/util/debounce.js'
+  import { placeStore } from '../../../../common/entity/place/place-store.js'
+  import { TourSpotMapContext } from './context/TourSpotMapContext.js'
+
+  export let spotVisible: boolean = true
 
   const DEFAULT_PLACES = [
     { region: 'busan', lat: 35.10077, lng: 129.03376 },
@@ -20,6 +24,7 @@
 
   const shapeStore = writable([] as any[])
   const mapContext = mapStore.getMapContext()
+  let tourSpotContext
 
   let el: HTMLElement
   let mapHandle: IMapSpec = undefined
@@ -58,6 +63,10 @@
     mapStore.setViewport((viewport) => {
       viewport.lat = e.lat
       viewport.lng = e.lng
+    })
+    mapHandle.queryAddress(e.lat, e.lng).then((res) => {
+      //console.log(res)
+      placeStore.loadPlaces(mapHandle.getBounds(), res[0].region_1depth_name)
     })
   }
   const updateLevel = (e) => {
@@ -105,6 +114,7 @@
       mapHandle = handle
       const vp = mapStore.viewport()
       const pos = mapHandle.createPosition({ ...vp })
+      placeStore.setDriver(mapHandle)
       mapHandle.render(pos, vp.level)
       mapHandle.on((e) => {
         const { type } = e
@@ -117,6 +127,10 @@
       })
       mapContext.installMapDriver(mapHandle, shapeStore)
       mapContext.start()
+      if (spotVisible) {
+        tourSpotContext = new TourSpotMapContext(mapHandle)
+        tourSpotContext.start()
+      }
     })
   })
   onDestroy(() => {

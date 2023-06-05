@@ -8,6 +8,7 @@
   import { mapStore } from '@main/component/map/map-store.js'
   import { appConfigDao } from '@/common/entity/index.js'
   import type { Journey } from '@/common/entity/journey/Journey.js'
+  import { sheetStore } from '../component/sheet/index.js'
 
   appConfigDao.isFirstOpen().then((firstOpen: boolean) => {
     console.log(firstOpen)
@@ -17,6 +18,7 @@
   const setActiveProvince = (e) => {
     activeProvince = e.detail
     $provinceStore.setActiveProvince(activeProvince)
+    sheetStore.clear()
   }
   const openRegionMap = (e) => {
     const journey = e.detail as Journey

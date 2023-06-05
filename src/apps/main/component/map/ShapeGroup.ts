@@ -45,6 +45,9 @@ export class ShapeGroup<T> {
       })
     })
   }
+  renderObjects(objects: ShapeObject<T>[]) {
+    this.objects = objects
+  }
   dispose() {
     this.shapes.forEach((shape) => {
       shape.setMap(null)

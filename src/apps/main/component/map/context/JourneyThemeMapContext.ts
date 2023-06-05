@@ -94,6 +94,8 @@ export class JourneyThemeContext implements IMapContext {
       posExtractor: (data) => data.courses[0].startPos
     })
     this.startPointGroup.repaint()
+    const pos = this.journey.getStartPos()
+    this.driver.setCenter(pos)
   }
   clear() {
     if (this.startPointGroup) {

@@ -5,10 +5,11 @@
   import { journeyThemeStore } from '@entity/journey/journey-store.js'
   import AppLayout from '@/common/AppLayout.svelte'
   import { provinceStore } from '@main/domain/province/province-store.js'
-  import type { Region } from '@/common/entity/region/Region.js'
+  import { REGION_CODE, type Region } from '@/common/entity/region/Region.js'
   import Jumbotron from '../component/nav/Jumbotron.svelte'
   import AppIcon from '@/common/AppIcon.svelte'
   import type { JourneyTheme } from '@/common/entity/journey/JourneyTheme.js'
+  import api from '@/service/api/index.js'
   appConfigDao.isFirstOpen().then((firstOpen: boolean) => {
     console.log(firstOpen)
   })
@@ -23,6 +24,13 @@
   const gotoTheme = (theme: JourneyTheme): void => {
     page(`/theme/${theme.seq}`)
   }
+  const loadFestivals = () => {
+    api.place.festivals(REGION_CODE.SEOUL, '20230630').then((res) => {
+      console.log(res.festivals.map((f) => [f.startDate, f.endDate]))
+    })
+  }
+
+  loadFestivals()
   // regionStore.loadRegions()
 </script>
 
@@ -105,6 +113,15 @@
             </div>
           </div>
         {/each}
+      </div>
+    </AppLayout>
+  </section>
+  <section>
+    <AppLayout>
+      <div class="row boxes">
+        <div class="col-sm-12">
+          <h2>축제</h2>
+        </div>
       </div>
     </AppLayout>
   </section>

@@ -19,6 +19,9 @@
   import { uiState } from '@main/domain/ui/index.js'
   import router from '@common/router/index.js'
   import { readyStore } from '@entity/index.js'
+  import { sheetStore } from './component/sheet/index.js'
+  import BottomSheet from './component/sheet/BottomSheet.svelte'
+
   let showSplash = undefined
   // console.log(db)
   const initPagination = () => {
@@ -36,12 +39,13 @@
 
   let debouncer: Debounce
   const handleScroll = (e) => {
-    uiState.updateScroll(e.target.scrollTop)
+    const { scrollTop, offsetHeight } = e.target
+    uiState.updateScroll(scrollTop, scrollTop + offsetHeight)
   }
 
   onMount(() => {
     const appEl = document.querySelector('#app') as HTMLElement
-    debouncer = new Debounce(appEl, 'scroll', handleScroll, 10)
+    debouncer = new Debounce(appEl, 'scroll', handleScroll, 100)
 
     readyStore.subscribe((state) => {
       if (state.all) {
@@ -59,11 +63,18 @@
     <div class="inner" in:fade={{ duration: 150, delay: 350 }}>
       <GnbWrapper {router} />
       {#key $router.params}
-        <svelte:component this={$router.component} {router} />
+        <svelte:component this={$router.component} />
       {/key}
     </div>
   {/if}
-
+  {#if $sheetStore.activeSheet}
+    <BottomSheet>
+      <svelte:component
+        this={$sheetStore.activeSheet.component}
+        {...$sheetStore.activeSheet.props}
+      />
+    </BottomSheet>
+  {/if}
   <ToastView />
 </main>
 

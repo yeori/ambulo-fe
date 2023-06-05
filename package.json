@@ -9,13 +9,15 @@
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "pub:prod": "npm run build && ./scripts/cp-rss.sh",
-    "staging": "NODE_ENV=staging vite build && ./scripts/cp-rss.sh"
+    "staging": "NODE_ENV=staging vite build && ./scripts/cp-rss.sh",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.3",
     "@tsconfig/svelte": "^4.0.1",
     "@types/google.maps": "^3.53.1",
     "@types/node": "^20.1.1",
+    "csv-parser": "^3.0.0",
     "sass": "^1.62.1",
     "svelte": "^3.57.0",
     "svelte-check": "^2.10.3",
@@ -23,6 +25,7 @@
     "typescript": "^5.0.2",
     "vite": "^4.3.2",
     "vite-plugin-pwa": "^0.14.7",
+    "vitest": "^0.31.1",
     "workbox-build": "^6.5.4",
     "workbox-cacheable-response": "^6.5.4",
     "workbox-core": "^6.5.4",

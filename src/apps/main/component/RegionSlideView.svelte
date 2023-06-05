@@ -37,6 +37,7 @@
     } else {
       flyOption.x = -16
     }
+    uiState.resetScroll()
     loadJourneys(activeProvince)
   }
 

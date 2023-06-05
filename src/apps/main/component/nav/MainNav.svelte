@@ -7,7 +7,7 @@
   import { provinceStore } from '@main/domain/province/province-store.js'
   import ProvinceBadge from '../../domain/province/ProvinceBadge.svelte'
   import { uiState } from '@main/domain/ui/index.js'
-
+  import dgk from '@/service/api/dgk.js'
   const goToMap = (path) => {
     page(path)
   }
@@ -20,12 +20,16 @@
       })
     })
   }
+  const send = () => {
+    dgk.getCode()
+  }
 </script>
 
 <nav class:visible={$uiState.scrollTop >= 30}>
   <div class="container">
     <div class="inner">
       <AmbuloBadge on:click={() => goToMap('/')} />
+      <button class="nude" on:click={send}>run</button>
       <!-- {#if $provinceStore.activeProvince}
             {#key $provinceStore.activeProvince}
               <ProvinceBadge province={$provinceStore.activeProvince} />

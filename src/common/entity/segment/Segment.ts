@@ -6,5 +6,5 @@ export type SegmentType = {
   circular: boolean
   ownerRef: number
   fingerprint: string
-  positons: Array<CoordType>
+  positions: Array<CoordType>
 }

@@ -1,7 +1,9 @@
 import type { Journey } from '@/common/entity/journey/Journey.js'
 import type { JourneyPath, JourneyPathOption } from './JourneyPath.js'
 import type { Coord } from '@/common/entity/coord/Coord.js'
+import type { IShape } from './IShape.js'
 
+export type IMapBound = kakao.maps.LatLngBounds | google.maps.LatLngBounds
 export interface IMapPos {
   lat: number
   lng: number
@@ -33,7 +35,14 @@ export type OverayOption = {
   zIndex: number
   click?: boolean
 }
+export interface MarkerOption {
+  title?: string
+  pos: { lat: number; lng: number }
+}
 export interface IMapSpec {
+  createMarker(option: MarkerOption): IShape
+  getBounds(): IMapBound
+  queryAddress(lat: any, lng: any): Promise<any>
   on(arg0: (eventName: any, e: any) => void): unknown
   setCenter(pos: { lat: number; lng: number }): void
   drawOverlay(option: OverayOption): any

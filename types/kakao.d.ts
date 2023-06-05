@@ -12,6 +12,20 @@ declare namespace kakao.maps {
       callback: (e?: MouseEvent) => void
     )
   }
+  declare namespace services {
+    export enum Status {
+      OK = 'OK',
+      ZERO_RESULT = 'ZERO_RESULT',
+      ERROR = 'ERROR'
+    }
+    export class Geocoder {
+      coord2RegionCode(
+        lat: number,
+        lng: number,
+        callback: (results: any[], status: Status) => void
+      )
+    }
+  }
   export function load(callback)
   /**
    * 지도 위에 올라가는 각종 도형의 선 스타일을 의미한다.
@@ -67,6 +81,17 @@ declare namespace kakao.maps {
      */
     toCoords(): Coords
   }
+  export class LatLngBounds {
+    constructor(sw: LatLng, ne: LatLng)
+    equals(other: LatLngBounds): boolean
+    toString(): string
+    getSouthWest(): LatLng
+    getNorthEast(): LatLng
+    isEmpty(): boolean
+    extend(latlng: LatLng): void
+    contains(latLng: LatLng): boolean
+    contain(latLng: LatLng): boolean
+  }
   /**
    * Wcongnamul 좌표 정보를 가지고 있는 객체를 생성한다.
    */
@@ -78,6 +103,22 @@ declare namespace kakao.maps {
      */
     constructor(x: number, y: number)
     toString(): string
+  }
+  export class MarkerOption {
+    map: Map
+    position: LatLng
+    title?: string
+    draggable?: boolean = true
+    clickable?: boolean = true
+  }
+  export class Marker {
+    constructor(option: MarkerOption)
+    setMap(map: Map)
+    getMap(): Map
+    setPosition(position: LatLng)
+    getPosition(): LatLng
+    setVisible(visible: boolean)
+    getVisible(): boolean
   }
   /**
    * poliyline 옵션값
@@ -192,6 +233,7 @@ declare namespace kakao.maps {
     addListener(eventName: string, callback: (e: any) => void)
     panTo(pos: LatLng)
     getCenter(): LatLng
+    getBounds(): LatLngBounds
   }
 }
 // declare module KakaoMap {

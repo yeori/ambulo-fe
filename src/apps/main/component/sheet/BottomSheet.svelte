@@ -1,17 +1,49 @@
-<script>
+<script lang="ts">
   import { fly } from 'svelte/transition'
-  // your script goes here
+  import Dnd from '@common/dnd/Dnd.svelte'
+  import { DndEvent, type IDndHandler } from '@common/dnd/dnd.js'
+  import { sheetStore } from './index.js'
+
+  let sheetEl: HTMLElement
+  let innerEl: HTMLElement
+  class DragHandler implements IDndHandler {
+    innerHeight: number = 0
+    height: number = 0
+    maxHeight: number
+    accept(el: HTMLElement) {
+      return el.classList.contains('dh') && el.parentElement === sheetEl
+    }
+    beforeDrag(e: DndEvent) {
+      this.innerHeight = innerEl.offsetHeight
+      this.maxHeight = 200
+
+      innerEl.style.height = `${this.innerHeight}px`
+      innerEl.style['max-height'] = 'unset'
+    }
+    dragging(e: DndEvent) {
+      this.height = this.innerHeight - e.dy
+      innerEl.style.height = `${this.height}px`
+    }
+    afterDrag(e: DndEvent) {
+      if (this.height < 60) {
+        sheetStore.clear()
+      }
+    }
+  }
 </script>
 
 <section
+  bind:this={sheetEl}
   transition:fly={{
     x: 0,
     y: 40,
     duration: 140
   }}
 >
-  <div class="dh" />
-  <div class="inner">
+  <Dnd handler={new DragHandler()}>
+    <div slot="drag" class="dh" />
+  </Dnd>
+  <div class="inner" bind:this={innerEl}>
     <slot />
   </div>
 </section>
@@ -30,10 +62,11 @@
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     .dh {
-      height: 28px;
+      height: 34px;
       display: flex;
       justify-content: center;
       align-items: center;
+      cursor: pointer;
       &::after {
         content: '';
         display: block;
@@ -44,7 +77,10 @@
       }
     }
     .inner {
-      padding: 8px 16px;
+      position: relative;
+      top: 0px;
+      max-height: 160px;
+      overflow-y: auto;
     }
   }
 </style>

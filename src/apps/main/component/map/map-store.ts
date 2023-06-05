@@ -2,19 +2,22 @@ import { writable, type Subscriber, type Writable, get } from 'svelte/store'
 import util from '@/service/util/index.js'
 import { local } from '@/service/storage/index.js'
 import { JourneyThemeContext } from './context/JourneyThemeMapContext.js'
+import { PlaceContext } from './context/PlaceContext.js'
 import type { JourneyTheme } from '@/common/entity/journey/JourneyTheme.js'
 import type { Journey } from '@/common/entity/journey/Journey.js'
 import type { Region } from '@/common/entity/region/Region.js'
+import type { Place } from '@/common/entity/place/Place.js'
 
 const KEY_MAP_STORE = 'ambulo.map.context'
 const KEY_VIEWPORT_STATE = 'ambulo.map.viewport'
 const update = util.svelteStore.helpUpdate
 export type JourneyState = {
-  target: 'region' | 'theme'
+  target: 'region' | 'theme' | 'place'
   once: boolean
   regionSeq?: number
   themeSeq?: number
   journeySeq?: number
+  uuid?: string
 }
 
 export type ViewportState = {
@@ -97,10 +100,33 @@ export class MapStore {
       yes()
     })
   }
+  showPlace(place: Place): Promise<void> {
+    return new Promise((yes, no) => {
+      update(this.journeyState, (store) => {
+        store.target = 'place'
+        store.once = false
+        store.themeSeq = undefined
+        store.journeySeq = undefined
+        store.regionSeq = undefined
+        store.uuid = place.uuid
+      })
+      const pos = place.getPosition()
+      this.setViewport((vp) => {
+        vp.lat = pos.lat
+        vp.lng = pos.lng
+        vp.level = 4
+      })
+      yes()
+    })
+  }
   getMapContext() {
     // FIXME 여기 있으면 안될거 같다. IMapContext 가  MapStore를 참조함. 양방향 참조 중
     const params = get(this.journeyState)
-    return new JourneyThemeContext(params as JourneyState)
+    if (params.target === 'place') {
+      return new PlaceContext(params.uuid)
+    } else {
+      return new JourneyThemeContext(params as JourneyState)
+    }
   }
 }
 export const mapStore = new MapStore(

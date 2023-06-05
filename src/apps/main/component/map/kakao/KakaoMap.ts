@@ -1,8 +1,10 @@
 import type { Journey } from '@/common/entity/journey/Journey.js'
 import type {
+  IMapBound,
   IMapPath,
   IMapPos,
   IMapSpec,
+  MarkerOption,
   OverayOption,
   PathPoint
 } from '../IMapSpec.js'
@@ -10,6 +12,7 @@ import { KakaoPath } from './KakaoPath.js'
 import { KakaoPos } from './KakaoPos.js'
 import { JourneyPath } from '../JourneyPath.js'
 import type { Writable } from 'svelte/store'
+import { KakaoMarker } from './KakaoMarker.js'
 
 const calcuateDistance = (points: IMapPos[]) => {
   const distLine = new kakao.maps.Polyline({ path: [] })
@@ -76,6 +79,23 @@ export class KakaoMap implements IMapSpec {
 
     return overlay
   }
+  queryAddress(lat: number, lng: number): Promise<any> {
+    return new Promise((good, bad) => {
+      const geocoder = new kakao.maps.services.Geocoder()
+      geocoder.coord2RegionCode(lng, lat, (results, status) => {
+        if (status === kakao.maps.services.Status.ERROR) {
+          bad(status)
+        }
+        good(results)
+      })
+    })
+  }
+  getBounds(): IMapBound {
+    const bnd = this.mapHandle.getBounds()
+    // google map과 bound 클래스 메소드의 이름이 다르다.
+    bnd.contains = bnd.contain
+    return bnd
+  }
   render(pos: IMapPos, zoomLevel: number) {
     this.pos = pos
     this.zoom = zoomLevel
@@ -126,5 +146,15 @@ export class KakaoMap implements IMapSpec {
   setCenter(coord: { lat: number; lng: number }) {
     const pos = new kakao.maps.LatLng(coord.lat, coord.lng)
     this.mapHandle.panTo(pos)
+  }
+
+  createMarker(option: MarkerOption) {
+    const { pos, title } = option
+    const marker = new kakao.maps.Marker({
+      map: this.mapHandle,
+      position: new kakao.maps.LatLng(pos.lat, pos.lng),
+      title
+    })
+    return new KakaoMarker(marker)
   }
 }

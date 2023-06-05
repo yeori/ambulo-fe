@@ -43,11 +43,16 @@
       floatingBox.component = undefined
     }
   }
-  const changeTheme = (theme: JourneyTheme) => {
+  const closeFloatingBox = () => {
     floatingBox.visible = false
+    floatingBox.component = undefined
+  }
+  const changeTheme = (theme: JourneyTheme) => {
+    closeFloatingBox()
     mapStore.showJouneyTheme(theme.journyes[0], theme)
   }
   const changeRegion = (region: Region) => {
+    closeFloatingBox()
     mapStore.showRegion(region.journeys[0], region)
   }
   const unsub = mapStore.subscribe((store) => {
