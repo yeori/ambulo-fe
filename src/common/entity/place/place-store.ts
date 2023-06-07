@@ -75,8 +75,8 @@ export class PlacePagination {
   subscribe(callback: Subscriber<{ places: Place[] }>) {
     return this.store.subscribe(callback)
   }
-  loadMore() {
-    this.pgn = this.pgn.next()
+  loadMore(cnt) {
+    this.pgn = this.pgn.next(cnt)
     update(this.store, (store) => {
       store.places.push(...this.pgn.getItems())
     })
