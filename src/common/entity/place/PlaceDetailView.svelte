@@ -7,11 +7,14 @@
   import { mapStore } from '@/apps/main/component/map/map-store.js'
   import MapView from '@/apps/main/component/map/MapView.svelte'
   export let place: Place
+  export let isFestival: boolean
 
   type ViewType = 'info' | 'pic' | 'map'
   let viewType: ViewType = 'info'
   let pictures = []
   let detail = place.detail
+  let contentEl: HTMLElement
+  let resizing: ResizeObserver = undefined
   $: {
     place
     showInfo()
@@ -31,12 +34,12 @@
     })
   }
   const showLocation = () => {
-    mapStore.showPlace(place)
+    mapStore.showPlace(place, isFestival)
     viewType = 'map'
   }
 </script>
 
-<section>
+<section class:map={viewType === 'map'}>
   <h3>
     <span class="title">{place.title}</span><ActionIcon
       icon="info"
@@ -46,13 +49,16 @@
       on:click={showLocation}
     />
   </h3>
-  <div class="content">
+  <div class="content" bind:this={contentEl}>
     {#if viewType === 'info'}
       {#if detail}
         <div class="overview">
           {#each place.getOverview() as para}
             <p>{para}</p>
           {/each}
+          {#if place.getOverview().length === 0}
+            <span class="empty">설명없음</span>
+          {/if}
         </div>
       {/if}
     {/if}
@@ -71,13 +77,17 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    &.map {
+      height: 100%;
+    }
+
     h3 {
       position: sticky;
       top: 0;
       background-color: white;
       display: flex;
       align-items: center;
+      z-index: 1;
       .title {
         flex: 1 1 auto;
       }
@@ -88,6 +98,14 @@
       .overview {
         p {
           margin-bottom: 8px;
+        }
+        .empty {
+          color: #010101;
+          font-style: italic;
+          background-color: #f0f0f0;
+          padding: 4px 8px;
+          display: inline-block;
+          font-size: 12px;
         }
       }
     }

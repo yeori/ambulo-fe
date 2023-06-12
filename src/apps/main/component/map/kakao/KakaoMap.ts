@@ -157,4 +157,9 @@ export class KakaoMap implements IMapSpec {
     })
     return new KakaoMarker(marker)
   }
+  relayout(): void {
+    const center = this.mapHandle.getCenter()
+    this.mapHandle.relayout()
+    this.mapHandle.panTo(center)
+  }
 }

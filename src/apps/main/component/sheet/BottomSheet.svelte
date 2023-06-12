@@ -25,7 +25,7 @@
       innerEl.style.height = `${this.height}px`
     }
     afterDrag(e: DndEvent) {
-      if (this.height < 60) {
+      if (this.height < 180) {
         sheetStore.clear()
       }
     }
@@ -33,18 +33,19 @@
 </script>
 
 <section
-  bind:this={sheetEl}
   transition:fly={{
     x: 0,
     y: 40,
     duration: 140
   }}
 >
-  <Dnd handler={new DragHandler()}>
-    <div slot="drag" class="dh" />
-  </Dnd>
-  <div class="inner" bind:this={innerEl}>
-    <slot />
+  <div class="container" bind:this={sheetEl}>
+    <Dnd handler={new DragHandler()}>
+      <div slot="drag" class="dh" />
+    </Dnd>
+    <div class="inner" bind:this={innerEl}>
+      <slot />
+    </div>
   </div>
 </section>
 
@@ -57,10 +58,16 @@
     right: 0;
     width: 100%;
     bottom: 0;
-    background-color: white;
-    box-shadow: 0 0 8px #0000004d, 0 0 1px #0000006d;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    z-index: 10;
+
+    div.container {
+      box-shadow: 0 0 8px #0000004d, 0 0 1px #0000006d;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      background-color: white;
+      padding: 0;
+      // height: 100%;
+    }
     .dh {
       height: 34px;
       display: flex;

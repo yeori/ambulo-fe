@@ -1,5 +1,5 @@
 import util from '@/service/util/index.js'
-import { writable, type Subscriber, type Writable } from 'svelte/store'
+import { writable, type Subscriber, type Writable, get } from 'svelte/store'
 const update = util.svelteStore.helpUpdate
 export type TabItemType<T> = {
   active?: boolean
@@ -54,7 +54,7 @@ export class TabModel<T> {
       store.activeIndex = idx
     })
   }
-  readonly store: Writable<TabModelStore<T>>
+  private readonly store: Writable<TabModelStore<T>>
   constructor(tabItems: TabItem<T>[]) {
     let idx = tabItems.findIndex((item) => item.isActive())
 
@@ -67,6 +67,14 @@ export class TabModel<T> {
   }
   subscribe(callback: Subscriber<TabModelStore<T>>) {
     return this.store.subscribe(callback)
+  }
+  getActiveData() {
+    const { activeIndex, items } = get(this.store)
+    if (activeIndex >= 0) {
+      return items[activeIndex].getData()
+    } else {
+      return undefined
+    }
   }
 
   static create<T>(

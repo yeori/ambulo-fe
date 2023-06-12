@@ -40,6 +40,7 @@ export interface MarkerOption {
   pos: { lat: number; lng: number }
 }
 export interface IMapSpec {
+  relayout(): void
   createMarker(option: MarkerOption): IShape
   getBounds(): IMapBound
   queryAddress(lat: any, lng: any): Promise<any>

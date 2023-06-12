@@ -59,6 +59,10 @@ export class Place implements IPlace {
   getOverview(): string[] {
     if (!this.detail) return []
     const { overview } = this.detail
-    return overview.split('\n').flatMap((para) => para.split('<br />'))
+    if (!overview) {
+      return []
+    }
+    const paras = overview.split('<br>').flatMap((para) => para.split('<br />'))
+    return paras.flatMap((p) => p.split('\n'))
   }
 }

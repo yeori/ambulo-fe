@@ -53,9 +53,17 @@ const svelteStore = {
     })
   }
 }
+const TIMEZONE_OFFSET_MILLIS = -1 * new Date().getTimezoneOffset() * 60 * 1000
+const time = {
+  ymd: (value: Date) => {
+    const millis = value.getTime() + TIMEZONE_OFFSET_MILLIS
+    return new Date(millis).toISOString().split('T')[0]
+  }
+}
 export default {
   rand,
   type,
   array,
-  svelteStore
+  svelteStore,
+  time
 }

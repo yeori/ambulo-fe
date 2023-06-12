@@ -28,6 +28,7 @@
 
   let el: HTMLElement
   let mapHandle: IMapSpec = undefined
+  let resizing: ResizeObserver = undefined
 
   const { geo } = userLocation
 
@@ -74,6 +75,22 @@
       viewport.level = e.level
     })
   }
+  const resizeMap = () => {
+    mapHandle.relayout()
+  }
+  const turnOnResizer = () => {
+    const debouncer = new Debounce(undefined, '', resizeMap, 300)
+    resizing = new ResizeObserver(() => {
+      debouncer.debounce(undefined)
+    })
+    resizing.observe(el)
+  }
+  const turnOffResizer = () => {
+    if (resizing) {
+      resizing.disconnect()
+      resizing = undefined
+    }
+  }
 
   const locationLoader = geo
     .requestPermission()
@@ -116,21 +133,23 @@
       const pos = mapHandle.createPosition({ ...vp })
       placeStore.setDriver(mapHandle)
       mapHandle.render(pos, vp.level)
-      mapHandle.on((e) => {
-        const { type } = e
-        if (type === 'center') {
-          clearTimeout(timer)
-          timer = setTimeout(updateViewport, 500, e)
-        } else if (type === 'zoom') {
-          updateLevel(e)
-        }
-      })
+      // mapHandle.on((e) => {
+      //   const { type } = e
+      //   if (type === 'center') {
+      //     clearTimeout(timer)
+      //     timer = setTimeout(updateViewport, 500, e)
+      //   } else if (type === 'zoom') {
+      //     updateLevel(e)
+      //   }
+      // })
       mapContext.installMapDriver(mapHandle, shapeStore)
       mapContext.start()
       if (spotVisible) {
         tourSpotContext = new TourSpotMapContext(mapHandle)
         tourSpotContext.start()
       }
+
+      turnOnResizer()
     })
   })
   onDestroy(() => {
@@ -142,6 +161,7 @@
     if ($session) {
       $session.close()
     }
+    turnOffResizer()
   })
 </script>
 

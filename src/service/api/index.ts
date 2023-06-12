@@ -2,6 +2,7 @@ import { Region, type Sido } from '@/common/entity/region/Region.js'
 import { GET } from './request.js'
 import { Journey, type JourneyType } from '@/common/entity/journey/Journey.js'
 import place from './place.js'
+import festival from './festival.js'
 
 const conv = <U>(
   res: { [x: string]: U },
@@ -48,5 +49,6 @@ export default {
   app,
   journey,
   region,
-  place
+  place,
+  festival
 }

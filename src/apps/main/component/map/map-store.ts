@@ -7,12 +7,14 @@ import type { JourneyTheme } from '@/common/entity/journey/JourneyTheme.js'
 import type { Journey } from '@/common/entity/journey/Journey.js'
 import type { Region } from '@/common/entity/region/Region.js'
 import type { Place } from '@/common/entity/place/Place.js'
+import type { Festival } from '@/common/entity/festival/Festival.js'
+import { FestivalConText } from './context/FestivalContext.js'
 
 const KEY_MAP_STORE = 'ambulo.map.context'
 const KEY_VIEWPORT_STATE = 'ambulo.map.viewport'
 const update = util.svelteStore.helpUpdate
 export type JourneyState = {
-  target: 'region' | 'theme' | 'place'
+  target: 'region' | 'theme' | 'place' | 'festival'
   once: boolean
   regionSeq?: number
   themeSeq?: number
@@ -100,10 +102,10 @@ export class MapStore {
       yes()
     })
   }
-  showPlace(place: Place): Promise<void> {
+  showPlace(place: Place, isFestival: boolean): Promise<void> {
     return new Promise((yes, no) => {
       update(this.journeyState, (store) => {
-        store.target = 'place'
+        store.target = isFestival ? 'festival' : 'place'
         store.once = false
         store.themeSeq = undefined
         store.journeySeq = undefined
@@ -122,8 +124,11 @@ export class MapStore {
   getMapContext() {
     // FIXME 여기 있으면 안될거 같다. IMapContext 가  MapStore를 참조함. 양방향 참조 중
     const params = get(this.journeyState)
-    if (params.target === 'place') {
-      return new PlaceContext(params.uuid)
+    const { target, uuid } = params
+    if (target === 'place') {
+      return new PlaceContext(uuid)
+    } else if (target === 'festival') {
+      return new FestivalConText(uuid)
     } else {
       return new JourneyThemeContext(params as JourneyState)
     }

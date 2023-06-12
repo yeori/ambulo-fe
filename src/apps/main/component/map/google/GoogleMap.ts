@@ -64,4 +64,5 @@ export default class GoogleMap implements IMapSpec {
   createJourneyPath(journey: Journey, option?: JourneyPathOption): JourneyPath {
     return new JourneyPath(this, journey)
   }
+  relayout(): void {}
 }

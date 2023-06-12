@@ -1,37 +1,44 @@
 <script lang="ts">
   import page from 'page'
-  import { appConfigDao } from '@/common/entity/index.js'
   import { regionStore } from '@entity/region/region-store.js'
   import { journeyThemeStore } from '@entity/journey/journey-store.js'
   import AppLayout from '@/common/AppLayout.svelte'
   import { provinceStore } from '@main/domain/province/province-store.js'
-  import { REGION_CODE, type Region } from '@/common/entity/region/Region.js'
+  import { type Region } from '@/common/entity/region/Region.js'
+  import RegionThumbnail from '@/common/entity/region/RegionThumbnail.svelte'
   import Jumbotron from '../component/nav/Jumbotron.svelte'
   import AppIcon from '@/common/AppIcon.svelte'
   import type { JourneyTheme } from '@/common/entity/journey/JourneyTheme.js'
-  import api from '@/service/api/index.js'
-  appConfigDao.isFirstOpen().then((firstOpen: boolean) => {
-    console.log(firstOpen)
-  })
+  import { festivalStore } from '@/common/entity/festival/festival-store.js'
+  import FestivalSlideView from '@/common/entity/festival/FestivalSlideView.svelte'
+  // appConfigDao.isFirstOpen().then((firstOpen: boolean) => {
+  //   // console.log(firstOpen)
+  // })
+
+  let festivalStat = undefined
+  let countFestival = (region: Region) => {
+    const { regionCode } = region
+    return festivalStat[regionCode]
+  }
 
   const gotoRegion = (region: Region) => {
-    if (region.isEmpty()) {
-      return
-    }
+    // if (region.isEmpty()) {
+    //   return
+    // }
     $provinceStore.setActiveRegion(region)
     page('/region')
   }
   const gotoTheme = (theme: JourneyTheme): void => {
     page(`/theme/${theme.seq}`)
   }
-  const loadFestivals = () => {
-    api.place.festivals(REGION_CODE.SEOUL, '20230630').then((res) => {
-      console.log(res.festivals.map((f) => [f.startDate, f.endDate]))
-    })
-  }
+  festivalStore.loadSidoStats().then((stats) => {
+    festivalStat = stats
+  })
 
-  loadFestivals()
-  // regionStore.loadRegions()
+  let activeFestivals = []
+  festivalStore.loadActiveFestivals().then((festivals) => {
+    activeFestivals = festivals
+  })
 </script>
 
 <main>
@@ -41,6 +48,20 @@
       <h5>도보 여행의 동반자</h5>
     </div>
   </Jumbotron>
+  <section>
+    <AppLayout>
+      <div class="row boxes">
+        <div class="col-sm-12">
+          <h2>축제</h2>
+        </div>
+      </div>
+      <div class="row boxes">
+        <div class="col-12">
+          <FestivalSlideView festivals={activeFestivals} />
+        </div>
+      </div>
+    </AppLayout>
+  </section>
   <section>
     <AppLayout>
       <div class="row boxes">
@@ -90,38 +111,14 @@
       </div>
       <div class="row boxes">
         {#each $regionStore.regions || [] as region}
-          <div class="box col-sm-6 col-md-4 col-lg-3">
-            <div
-              class="region"
-              class:empty={region.isEmpty()}
+          <div class="box col-6 col-sm-6 col-md-4 col-lg-3">
+            <RegionThumbnail
+              {region}
+              countFestival={festivalStat ? countFestival : undefined}
               on:click={() => gotoRegion(region)}
-              on:keydown={() => gotoRegion(region)}
-            >
-              <div
-                class="imgview"
-                style={`background-image: url(${region.getLogoUrl()})`}
-              />
-              <h4>{region.shortName}</h4>
-              {#if region.isEmpty()}
-                <p>코스 없음</p>
-              {:else}
-                <p>
-                  <AppIcon icon="route" />
-                  <span>{region.journeys.length} 코스</span>
-                </p>
-              {/if}
-            </div>
+            />
           </div>
         {/each}
-      </div>
-    </AppLayout>
-  </section>
-  <section>
-    <AppLayout>
-      <div class="row boxes">
-        <div class="col-sm-12">
-          <h2>축제</h2>
-        </div>
       </div>
     </AppLayout>
   </section>
@@ -178,49 +175,6 @@
           p + p {
             margin-top: 8px;
           }
-        }
-      }
-      .region {
-        position: relative;
-        padding: 12px;
-        height: 80px;
-        border-radius: 8px;
-        box-shadow: 2px 2px 8px #00000026, 0px 0px 4px #00000020;
-        background-color: white;
-        cursor: pointer;
-        &.empty {
-          color: #777;
-          cursor: not-allowed;
-          box-shadow: 0px 0px 4px #00000026;
-
-          &:hover {
-            transform: scale(1);
-            box-shadow: 0px 0px 4px #00000026;
-          }
-        }
-        &:hover {
-          transform: scale(1.02);
-          box-shadow: 0px 0px 18px #0000002d;
-        }
-        h4 {
-          font-size: 1.5rem;
-          margin-bottom: 8px;
-        }
-        p {
-          display: flex;
-          align-items: center;
-          column-gap: 4px;
-        }
-        .imgview {
-          position: absolute;
-          background-position: 90% 50%;
-          background-size: contain;
-          width: 56px;
-          height: 56px;
-          top: 12px;
-          right: 12px;
-          z-index: 3;
-          border-radius: 8px;
         }
       }
     }

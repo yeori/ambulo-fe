@@ -1,16 +1,12 @@
 import type { Place } from '@/common/entity/place/Place.js'
-import { REGION_CODE } from '@/common/entity/region/Region.js'
+import { REGION_CODE, Region } from '@/common/entity/region/Region.js'
 import api from '@/service/api/index.js'
 import util from '@/service/util/index.js'
-import {
-  get,
-  writable,
-  type Unsubscriber,
-  type Writable,
-  type Subscriber
-} from 'svelte/store'
+import { get, writable, type Unsubscriber, type Writable } from 'svelte/store'
 import type { IMapBound, IMapSpec } from '@main/component/map/IMapSpec.js'
-import { Pagination, Pgn } from '@/common/pgn/index.js'
+// import { Pagination, Pgn } from '@/common/pgn/index.js'
+import { Pagination, Pgn } from '@/service/pagination/Pagination.js'
+import { regionStore } from '../region/region-store.js'
 
 const update = util.svelteStore.helpUpdate
 
@@ -38,7 +34,7 @@ type PlaceList = {
   mapArea: IMapBound
   visibles: Place[]
   region: REGION_CODE
-  pgn: PlacePagination
+  pgn: Pagination<Place>
 }
 function updateVisible(
   store: Writable<PlaceList>,
@@ -57,34 +53,34 @@ function updateVisible(
   })
 }
 
-export class PlacePagination {
-  private store: Writable<{ places: Place[] }>
-  private paging: Pagination<Place>
-  private pgn: Pgn<Place>
-  constructor(places: Place[]) {
-    this.store = writable({ places: [] })
-    this.reset(places)
-  }
-  reset(places: Place[]) {
-    this.paging = new Pagination({ elements: places })
-    this.pgn = this.paging.getPage()
-    update(this.store, (store) => {
-      store.places = this.pgn.getItems()
-    })
-  }
-  subscribe(callback: Subscriber<{ places: Place[] }>) {
-    return this.store.subscribe(callback)
-  }
-  loadMore(cnt) {
-    this.pgn = this.pgn.next(cnt)
-    update(this.store, (store) => {
-      store.places.push(...this.pgn.getItems())
-    })
-  }
-  hasNext() {
-    return this.pgn.hasNext()
-  }
-}
+// export class PlacePagination {
+//   private store: Writable<{ places: Place[] }>
+//   private paging: Pagination<Place>
+//   private pgn: Pgn<Place>
+//   constructor(places: Place[]) {
+//     this.store = writable({ places: [] })
+//     this.reset(places)
+//   }
+//   reset(places: Place[]) {
+//     this.paging = new Pagination({ elements: places })
+//     this.pgn = this.paging.getPage()
+//     update(this.store, (store) => {
+//       store.places = this.pgn.getItems()
+//     })
+//   }
+//   subscribe(callback: Subscriber<{ places: Place[] }>) {
+//     return this.store.subscribe(callback)
+//   }
+//   loadMore(cnt) {
+//     this.pgn = this.pgn.next(cnt)
+//     update(this.store, (store) => {
+//       store.places.push(...this.pgn.getItems())
+//     })
+//   }
+//   hasNext() {
+//     return this.pgn.hasNext()
+//   }
+// }
 export class PlaceStore {
   driver: IMapSpec
   private store: Writable<PlaceList>
@@ -134,11 +130,18 @@ export class PlaceStore {
   }
   preparePagination(predicate: (place: Place) => boolean) {
     const places = get(this.store).visibles.filter(predicate)
-    return new PlacePagination(places)
+    return new Pagination(places, { numOfRows: 10, pageIndex: 0 })
   }
   findPlace(predicate: (place: Place) => boolean) {
     const { places } = get(this.store)
     return places.find(predicate)
+  }
+  findRegion(place): Region {
+    if (place.region) {
+      return place.region
+    } else {
+      return regionStore.findRegion((rgn) => place.regionRef === rgn.seq)
+    }
   }
 }
 export const placeStore = new PlaceStore()

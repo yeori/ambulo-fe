@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Journey } from '@/common/entity/journey/Journey.js'
-  import journeyService from '@/common/entity/journey/JourneyService.js'
   import JourneyCardView from '@/common/entity/journey/JourneyCardView.svelte'
   import { createEventDispatcher } from 'svelte'
   import { fade } from 'svelte/transition'

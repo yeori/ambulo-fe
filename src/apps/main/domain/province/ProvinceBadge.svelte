@@ -1,6 +1,5 @@
 <script lang="ts">
-  import type { Province } from './province-store.js'
-  // import AppIcon from '@/common/AppIcon.svelte'
+  import type { Province } from './Province.js'
   export let province: Province
 </script>
 

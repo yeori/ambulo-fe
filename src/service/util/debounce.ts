@@ -7,7 +7,9 @@ export class Debounce {
     private callback: (e: Event) => void,
     private delay: number
   ) {
-    this.attachEvent(elem, eventName)
+    if (elem) {
+      this.attachEvent(elem, eventName)
+    }
   }
 
   public debounce = (event: Event) => {

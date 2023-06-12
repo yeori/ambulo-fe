@@ -1,10 +1,14 @@
 <script lang="ts">
   import type { Region } from '@entity/region/Region.js'
-
   export let region: Region
+  export let allowDisable: boolean = true
 </script>
 
-<button class="nude region" disabled={region.journeys.length === 0} on:click>
+<button
+  class="nude region"
+  disabled={allowDisable && region.journeys.length === 0}
+  on:click
+>
   <span
     class="logo"
     style="background-image: url({region.getLogoUrl()})"

@@ -24,8 +24,8 @@ export class Pgn<T> {
   hasNext(): boolean {
     return this.endIndex < this.ctx.elements.length
   }
-  next() {
-    return this.ctx.nextPage(this)
+  next(cnt = 10) {
+    return this.ctx.nextPage(this, cnt)
   }
 }
 export class Pagination<T> {
@@ -43,10 +43,11 @@ export class Pagination<T> {
     const end = Math.min(start + numOfRows, elements.length)
     return new Pgn(this, start, end)
   }
-  nextPage(pgn: Pgn<T>) {
+  nextPage(pgn: Pgn<T>, cnt: number) {
     const { numOfRows, elements } = this.option
-    const startIndex = pgn.startIndex + numOfRows
-    const endIndex = Math.min(startIndex + numOfRows, elements.length)
+    cnt = cnt || numOfRows
+    const startIndex = pgn.startIndex + cnt
+    const endIndex = Math.min(startIndex + cnt, elements.length)
     return new Pgn(this, startIndex, endIndex)
   }
 }

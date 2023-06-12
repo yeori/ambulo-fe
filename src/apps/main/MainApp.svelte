@@ -70,8 +70,8 @@
   {#if $sheetStore.activeSheet}
     <BottomSheet>
       <svelte:component
-        this={$sheetStore.activeSheet.component}
-        {...$sheetStore.activeSheet.props}
+        this={$sheetStore.activeSheet?.component}
+        {...$sheetStore.activeSheet?.props}
       />
     </BottomSheet>
   {/if}

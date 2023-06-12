@@ -11,6 +11,8 @@
   import { uiState } from '@main/domain/ui/index.js'
   import { fade, fly } from 'svelte/transition'
   import util from '@/service/util/index.js'
+  import { regionTabModel } from '@/common/tab/tab-instance.js'
+  import TabNavView from '@/common/tab/TabNavView.svelte'
 
   export let province: Province
 
@@ -64,6 +66,7 @@
     <div class="container">
       <h3>
         <span class="name">{activeProvince?.shortName}</span>
+        <TabNavView model={regionTabModel} size="sm" />
       </h3>
       <ActionIcon
         on:click={() => pickRandom(-1)}
@@ -133,6 +136,11 @@
       align-items: center;
       h3 {
         flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        .name {
+          margin-right: 6px;
+        }
       }
     }
   }
