@@ -82,9 +82,17 @@ export class TabModel<T> {
     idFn: (data: T) => string,
     titleFn: (tab: T) => string
   ) {
-    const tabItems = userData.map(
-      (data) => new TabItem({ active: false, tabId: idFn(data), data, titleFn })
-    )
+    const idSet = new Set<string>()
+    const tabItems = userData.map((data) => {
+      const tabId = idFn(data)
+      if (idSet.has(tabId)) {
+        throw new Error(
+          `duplicated tab id: ${tabId} for data ${JSON.stringify(data)}`
+        )
+      }
+      idSet.add(tabId)
+      return new TabItem({ active: false, tabId, data, titleFn })
+    })
     return new TabModel(tabItems)
   }
 }

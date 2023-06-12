@@ -86,7 +86,7 @@
     .inner {
       position: relative;
       top: 0px;
-      max-height: 160px;
+      height: 300px;
       overflow-y: auto;
     }
   }

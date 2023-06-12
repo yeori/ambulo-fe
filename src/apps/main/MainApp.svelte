@@ -7,7 +7,8 @@
     RegionPage,
     JourneyThemePage,
     MapPage,
-    LoginPage
+    LoginPage,
+    FestivalPage
   } from './page/index.js'
   import SplashView from './component/SplashView.svelte'
   import ToastView from '@/common/toast/ToastView.svelte'
@@ -30,6 +31,7 @@
     router.bind('/region', RegionPage)
     router.bind('/login', LoginPage)
     router.bind('/theme/:themeId', JourneyThemePage)
+    router.bind('/festivals', FestivalPage)
     page.start()
   }
 

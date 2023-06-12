@@ -96,6 +96,7 @@
       position: relative;
       flex: 1 1 auto;
       .overview {
+        user-select: text;
         p {
           margin-bottom: 8px;
         }

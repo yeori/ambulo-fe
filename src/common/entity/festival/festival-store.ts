@@ -124,7 +124,14 @@ export class FestivalStore {
   loadActiveFestivals(time: Date = new Date()): Promise<Festival[]> {
     return api.festival.getActive().then((res) => {
       console.log(res)
-      return res.festivals
+      const { festivals } = res
+      update(this.store, (store) => {
+        store.mapArea = undefined
+        store.region = undefined
+        store.festivals = festivals
+        store.visibles = festivals
+      })
+      return festivals
     })
   }
 }

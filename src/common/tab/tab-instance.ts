@@ -14,3 +14,13 @@ export const regionTabModel: TabModel<TabData> = TabModel.create(
   (tab) => tab.id,
   (tab) => tab.text
 )
+
+const festivalTabs = [
+  new TabData('active', '진행중'),
+  new TabData('region', '지역')
+]
+export const festivalTabModel: TabModel<TabData> = TabModel.create(
+  festivalTabs,
+  (tab) => tab.id,
+  (tab) => tab.text
+)

@@ -3,22 +3,21 @@
   import type { Province } from './Province.js'
   import AppButton from '@/common/form/AppButton.svelte'
   import PlaceCardView from '@/common/entity/place/PlaceCardView.svelte'
-  import { festivalStore } from '@/common/entity/festival/festival-store.js'
   import type { Festival } from '@/common/entity/festival/Festival.js'
   import { fade } from 'svelte/transition'
 
-  export let province: Province
+  // export let province: Province
   export let viewport
+  export let paginator: () => Promise<Pagination<Festival>>
 
   let paging: Pagination<Festival> = undefined
-  const doPgn = (province: Province) => {
-    paging = undefined
-    festivalStore.loadFestivals(province.region.regionName).then(() => {
-      paging = festivalStore.preparePagination()
+  const doPgn = () => {
+    paginator().then((pgn) => {
+      paging = pgn
     })
   }
   $: {
-    doPgn(province)
+    doPgn()
   }
 </script>
 

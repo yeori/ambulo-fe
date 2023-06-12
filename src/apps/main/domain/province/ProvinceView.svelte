@@ -11,6 +11,7 @@
   import JourneyListView from '@/common/entity/journey/JourneyListView.svelte'
   import TourSiteView from './TourSiteView.svelte'
   import FestivalListView from './FestivalListView.svelte'
+  import { festivalStore } from '@/common/entity/festival/festival-store.js'
 
   export let province: Province
   let viewport = [0, 0]
@@ -35,8 +36,19 @@
       journeys = elem
     })
   }
+  const loadFestivalByRegion = () => {
+    return festivalStore.loadFestivals(province.region.regionName).then(() => {
+      return festivalStore.preparePagination()
+    })
+  }
+  const update = (province) => {
+    const { id } = activeTab
+    if (id === 'route') {
+      loadJourney(province)
+    }
+  }
   $: {
-    loadJourney(province)
+    update(province)
   }
 
   onDestroy(() => {
@@ -49,15 +61,17 @@
 <section in:fade={{ duration: 150 }}>
   <div class="container">
     <TabNavView model={regionTabModel} />
-    {#if activeTab.id === 'route'}
-      <JourneyListView {journeys} on:journey />
-    {/if}
-    {#if activeTab.id === 'place'}
-      <TourSiteView {province} {viewport} />
-    {/if}
-    {#if activeTab.id === 'festival'}
-      <FestivalListView {province} {viewport} />
-    {/if}
+    {#key province}
+      {#if activeTab.id === 'route'}
+        <JourneyListView {journeys} on:journey />
+      {/if}
+      {#if activeTab.id === 'place'}
+        <TourSiteView {province} {viewport} />
+      {/if}
+      {#if activeTab.id === 'festival'}
+        <FestivalListView {viewport} paginator={loadFestivalByRegion} />
+      {/if}
+    {/key}
   </div>
 </section>
 

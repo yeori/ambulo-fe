@@ -1,5 +1,5 @@
 <script lang="ts">
-  import page from 'page'
+  import router from '@router'
   import { regionStore } from '@entity/region/region-store.js'
   import { journeyThemeStore } from '@entity/journey/journey-store.js'
   import AppLayout from '@/common/AppLayout.svelte'
@@ -11,6 +11,7 @@
   import type { JourneyTheme } from '@/common/entity/journey/JourneyTheme.js'
   import { festivalStore } from '@/common/entity/festival/festival-store.js'
   import FestivalSlideView from '@/common/entity/festival/FestivalSlideView.svelte'
+  import AppButton from '@/common/form/AppButton.svelte'
   // appConfigDao.isFirstOpen().then((firstOpen: boolean) => {
   //   // console.log(firstOpen)
   // })
@@ -26,10 +27,10 @@
     //   return
     // }
     $provinceStore.setActiveRegion(region)
-    page('/region')
+    router.push('/region')
   }
   const gotoTheme = (theme: JourneyTheme): void => {
-    page(`/theme/${theme.seq}`)
+    router.push(`/theme/${theme.seq}`)
   }
   festivalStore.loadSidoStats().then((stats) => {
     festivalStat = stats
@@ -58,6 +59,9 @@
       <div class="row boxes">
         <div class="col-12">
           <FestivalSlideView festivals={activeFestivals} />
+        </div>
+        <div class="col-12">
+          <AppButton text="더보기" on:click={() => router.push('/festivals')} />
         </div>
       </div>
     </AppLayout>

@@ -26,6 +26,7 @@
     background-color: white;
     box-shadow: 0 0 2px #0000008d, 1px 1px 8px #0000004d;
     font-size: 12px;
+    min-width: 76px;
     .logo {
       width: 28px;
       height: 20px;
