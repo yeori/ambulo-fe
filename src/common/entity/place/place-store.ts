@@ -136,7 +136,7 @@ export class PlaceStore {
     const { places } = get(this.store)
     return places.find(predicate)
   }
-  findRegion(place): Region {
+  findRegion(place: Place): Region {
     if (place.region) {
       return place.region
     } else {

@@ -29,7 +29,9 @@
           journeyService.initJourneies(journeys)
         ]).then((res) => {
           appConfigDao.setInit()
-          dispatch('skip')
+          setTimeout(() => {
+            dispatch('skip')
+          }, 2000)
         })
       })
       .catch((e) => {
@@ -111,11 +113,6 @@
       max-width: 400px;
       h3 {
         font-size: 10vmin;
-        font-family: 'Lato', sans-serif;
-        margin: 0;
-      }
-      h5 {
-        font-size: 5vmin;
         font-family: 'Lato', sans-serif;
         margin: 0;
       }

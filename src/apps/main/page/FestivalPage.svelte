@@ -99,7 +99,11 @@
       <TabNavView model={festivalTabModel} size="sm" />
     </div>
     {#if activeTab.id === 'active'}
-      <FestivalListView {viewport} paginator={loadActiveFestivals} />
+      <FestivalListView
+        regionVisible={true}
+        {viewport}
+        paginator={loadActiveFestivals}
+      />
     {/if}
     {#if activeTab.id === 'region'}
       <div class="search">
@@ -144,14 +148,6 @@
       .container {
         display: flex;
         align-items: center;
-        h3 {
-          flex: 1 1 auto;
-          display: flex;
-          align-items: center;
-          .name {
-            margin-right: 6px;
-          }
-        }
       }
     }
 
@@ -171,11 +167,6 @@
       border-radius: 8px;
       background-color: white;
       box-shadow: 0 0 6px #0000004d;
-      .upper {
-        position: relative;
-        top: -8px;
-        left: -8px;
-      }
     }
   }
 </style>

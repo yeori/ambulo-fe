@@ -6,7 +6,7 @@
   import type { Festival } from '@/common/entity/festival/Festival.js'
   import { fade } from 'svelte/transition'
 
-  // export let province: Province
+  export let regionVisible: boolean = false
   export let viewport
   export let paginator: () => Promise<Pagination<Festival>>
 
@@ -25,7 +25,12 @@
   <div class="row" in:fade={{ duration: 150 }}>
     {#each $paging.items as festival (festival.place.uuid)}
       <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-        <PlaceCardView place={festival.place} duration={festival} {viewport} />
+        <PlaceCardView
+          place={festival.place}
+          duration={festival}
+          {viewport}
+          {regionVisible}
+        />
       </div>
     {/each}
     {#if paging.hasNext()}

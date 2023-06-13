@@ -2,11 +2,14 @@
   import ActionIcon from '@/common/ActionIcon.svelte'
   import type { Place } from './Place.js'
   import { sheetStore } from '@/apps/main/component/sheet/index.js'
+  import { placeStore } from './place-store.js'
   import PlaceDetailView from './PlaceDetailView.svelte'
+  import RegionIcon from '@entity/region/RegionIcon.svelte'
   import type { Duration } from '../festival/Festival.js'
   import util from '@/service/util/index.js'
   import { onMount } from 'svelte'
   export let place: Place
+  export let regionVisible: boolean = false
   export let duration: Duration = undefined
   export let viewport = [0, 10000000]
 
@@ -32,7 +35,7 @@
   const showPlaceInfo = () => {
     sheetStore.showSheet({
       component: PlaceDetailView,
-      props: { place, isFestival }
+      props: { place, isFestival, duration }
     })
   }
   $: {
@@ -66,6 +69,11 @@
         >
       </div>
     {/if}
+    {#if regionVisible}
+      <div class="region">
+        <RegionIcon region={placeStore.findRegion(place)} />
+      </div>
+    {/if}
   </div>
   <h5>
     <span>{place.title}</span><ActionIcon
@@ -92,6 +100,7 @@
       {/if}
     </h4>
   {/if}
+
   <div class="ctrl">
     <!--#dd0025-->
     <ActionIcon icon="favorite_on" size="md" shadow color="#cacaca" />
@@ -178,6 +187,11 @@
       font-weight: 400;
       display: flex;
       align-items: center;
+    }
+    .region {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
     }
     .ctrl {
       position: absolute;

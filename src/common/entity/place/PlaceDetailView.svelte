@@ -6,8 +6,14 @@
   import PictureGalleryView from '@/common/picture/PictureGalleryView.svelte'
   import { mapStore } from '@/apps/main/component/map/map-store.js'
   import MapView from '@/apps/main/component/map/MapView.svelte'
+  import RegionBadge from '@/common/badge/RegionBadge.svelte'
+  import RegionIcon from '../region/RegionIcon.svelte'
+  import type { Duration } from '../festival/Festival.js'
+  import DurationView from '../festival/DurationView.svelte'
+  import AppIcon from '@/common/AppIcon.svelte'
   export let place: Place
   export let isFestival: boolean
+  export let duration: Duration = undefined
 
   type ViewType = 'info' | 'pic' | 'map'
   let viewType: ViewType = 'info'
@@ -16,7 +22,6 @@
   let contentEl: HTMLElement
   let resizing: ResizeObserver = undefined
   $: {
-    place
     showInfo()
   }
 
@@ -49,6 +54,17 @@
       on:click={showLocation}
     />
   </h3>
+  <div class="region">
+    <RegionIcon region={placeStore.findRegion(place)} />
+    {#if isFestival}<DurationView {duration} /> {/if}
+  </div>
+  <div class="address">
+    <button class="nude addr"
+      >{#if detail}<span>{detail.getAddress()}</span>{/if}<AppIcon
+        icon="content_copy"
+      />
+    </button>
+  </div>
   <div class="content" bind:this={contentEl}>
     {#if viewType === 'info'}
       {#if detail}
@@ -90,6 +106,26 @@
       z-index: 1;
       .title {
         flex: 1 1 auto;
+      }
+    }
+    .region {
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      column-gap: 8px;
+    }
+    .address {
+      margin-bottom: 8px;
+      .nude.addr {
+        font-size: 1rem;
+        font-weight: 400;
+        padding: 6px;
+        background-color: #f1f1f1;
+        display: flex;
+        align-items: center;
+        line-height: 0;
+        border-radius: 8px;
+        column-gap: 4px;
       }
     }
     .content {

@@ -1,4 +1,6 @@
+import type { Region } from '../region/Region.js'
 import type { SegmentType } from '../segment/Segment.js'
+import type { IPlaceDetail } from './place-detail.js'
 
 export type ContactInfo = {
   A: string
@@ -21,10 +23,6 @@ export interface IPlace {
   uuid: string
   spot: SegmentType
 }
-export type PlaceDetail = {
-  overview: string
-  site: string
-}
 export class Place implements IPlace {
   contactInfo: { A?: string; Z?: string; P?: string }
   creationTime: string
@@ -38,7 +36,8 @@ export class Place implements IPlace {
   type: string
   uuid: string
   spot: SegmentType
-  detail: PlaceDetail
+  detail: IPlaceDetail
+  region: Region = undefined
   constructor(place: IPlace) {
     Object.keys(place).forEach((prop) => {
       this[prop] = place[prop]
@@ -58,11 +57,6 @@ export class Place implements IPlace {
   }
   getOverview(): string[] {
     if (!this.detail) return []
-    const { overview } = this.detail
-    if (!overview) {
-      return []
-    }
-    const paras = overview.split('<br>').flatMap((para) => para.split('<br />'))
-    return paras.flatMap((p) => p.split('\n'))
+    return this.detail.getOverview()
   }
 }
