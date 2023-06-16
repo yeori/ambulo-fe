@@ -1,3 +1,4 @@
+import type { UtcTimeString } from '@/common/type-def.js'
 import type { Region } from '../region/Region.js'
 import type { SegmentType } from '../segment/Segment.js'
 import type { IPlaceDetail } from './place-detail.js'
@@ -8,7 +9,6 @@ export type ContactInfo = {
   P: string
 }
 
-type UtcTimeString = string
 export interface IPlace {
   contactInfo: { A?: string; Z?: string; P?: string }
   creationTime: UtcTimeString

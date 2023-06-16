@@ -22,6 +22,8 @@
   import { readyStore } from '@entity/index.js'
   import { sheetStore } from './component/sheet/index.js'
   import BottomSheet from './component/sheet/BottomSheet.svelte'
+  import SlideMenuWrapper from './component/nav/menu/SlideMenuWrapper.svelte'
+  import SearchPage from './page/SearchPage.svelte'
 
   let showSplash = undefined
   // console.log(db)
@@ -62,20 +64,26 @@
   {#if showSplash === true}
     <SplashView on:skip={() => (showSplash = false)} />
   {:else if showSplash === false}
-    <div class="inner" in:fade={{ duration: 150, delay: 350 }}>
+    <div class="inner">
       <GnbWrapper {router} />
+      {#if $uiState.leftMenu.visible}
+        <SlideMenuWrapper />
+      {/if}
       {#key $router.params}
         <svelte:component this={$router.component} />
       {/key}
     </div>
   {/if}
   {#if $sheetStore.activeSheet}
-    <BottomSheet>
+    <BottomSheet zIndex={$sheetStore.activeSheet.zIndex}>
       <svelte:component
         this={$sheetStore.activeSheet?.component}
         {...$sheetStore.activeSheet?.props}
       />
     </BottomSheet>
+  {/if}
+  {#if $uiState.search.visible}
+    <SearchPage />
   {/if}
   <ToastView />
 </main>

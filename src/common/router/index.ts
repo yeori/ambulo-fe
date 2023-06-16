@@ -25,8 +25,9 @@ export class Router {
       component: undefined
     })
   }
-  push(path: string) {
+  push(path: string): Promise<void> {
     page.show(path)
+    return Promise.resolve()
   }
   intParam(paramName) {
     return this.getParam(paramName, (v) => Number.parseInt(v))

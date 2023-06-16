@@ -15,6 +15,7 @@
   import { TourSpotMapContext } from './context/TourSpotMapContext.js'
 
   export let spotVisible: boolean = true
+  export let mapContext = undefined
 
   const DEFAULT_PLACES = [
     { region: 'busan', lat: 35.10077, lng: 129.03376 },
@@ -23,7 +24,9 @@
   ]
 
   const shapeStore = writable([] as any[])
-  const mapContext = mapStore.getMapContext()
+  if (!mapContext) {
+    mapContext = mapStore.getMapContext()
+  }
   let tourSpotContext
 
   let el: HTMLElement

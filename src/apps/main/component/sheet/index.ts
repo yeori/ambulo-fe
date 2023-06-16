@@ -5,6 +5,7 @@ const update = util.svelteStore.helpUpdate
 export type SheetSpec = {
   component: any
   props: any
+  zIndex: number
 }
 export type IBottomSheet = {
   sheets: SheetSpec[]

@@ -1,4 +1,6 @@
 <script lang="ts">
+  let clazz: string = ''
+  export { clazz as class }
   export let type: string = 'ambulo'
   export let icon: string = undefined
   export let hover: string = undefined
@@ -13,7 +15,7 @@
 </script>
 
 <span
-  class={`icon ${size}`}
+  class="icon {size} {clazz}"
   class:ambulo={type === 'ambulo'}
   class:custom={type === 'custom'}
   class:sm={[size]}

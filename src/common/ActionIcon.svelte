@@ -1,6 +1,8 @@
 <script lang="ts">
   import AppIcon from './AppIcon.svelte'
 
+  let clazz: string = ''
+  export { clazz as class }
   export let type: string = 'ambulo'
   export let icon: string = undefined
   export let hover: string = undefined
@@ -12,7 +14,7 @@
 </script>
 
 <button
-  class="nude {theme} {shadow ? 'shadow' : ''}"
+  class="nude {theme} {shadow ? 'shadow' : ''} {clazz || ''}"
   style="--btn-radius: {radius}"
   on:click
 >
@@ -28,6 +30,9 @@
     padding: 6px;
     &.shadow {
       filter: drop-shadow(0px 0px 4px #0000008d);
+    }
+    :global(.icon) {
+      flex: 1 1 auto;
     }
   }
 </style>

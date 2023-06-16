@@ -55,6 +55,9 @@ body {
   inset: 0;
   height: 100%;
   overflow-y: auto;
+  div.container {
+    max-width: 720px;
+  }
 }
 
 ::-webkit-scrollbar {

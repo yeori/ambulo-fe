@@ -9,7 +9,13 @@
   import journeyService from '@/common/entity/journey/JourneyService.js'
   import regionService from '@/common/entity/region/RegionService.js'
   const dispatch = createEventDispatcher()
-  const names = ['bg000.jpg', 'bg001.jpg', 'bg002.jpg']
+  const names = [
+    'bg000.jpg',
+    'bg001.jpg',
+    'bg002.jpg',
+    'bg003.jpg',
+    'bg004.jpg'
+  ]
 
   let showInitButton = undefined
   let downloading = undefined
@@ -55,7 +61,6 @@
     class="bg"
     style={`background-image: url(/images/bg/${util.rand.pick(names)})`}
   />
-  <h4>준비 중입니다</h4>
   <div class="ambulo abs-center">
     <h3 class="shadow">Ambulo</h3>
     <!-- <h5 class="shadow">ready to start</h5> -->
@@ -65,7 +70,7 @@
           class="imgview"
           style="background-image: url(/images/graphic/g01.jpg)"
         />
-        <p>앱을 시작하려면 경로 정보를 내려받아야 합니다.</p>
+        <p>앱 시작을 위한 데이터를 내려받습니다.</p>
         {#if downloading}
           <LoadingView />
         {/if}

@@ -12,6 +12,7 @@
   import { festivalStore } from '@/common/entity/festival/festival-store.js'
   import FestivalSlideView from '@/common/entity/festival/FestivalSlideView.svelte'
   import AppButton from '@/common/form/AppButton.svelte'
+  import { fade } from 'svelte/transition'
   // appConfigDao.isFirstOpen().then((firstOpen: boolean) => {
   //   // console.log(firstOpen)
   // })
@@ -42,7 +43,7 @@
   })
 </script>
 
-<main>
+<main in:fade>
   <Jumbotron>
     <div class="ambulo">
       <h1>Ambulo</h1>

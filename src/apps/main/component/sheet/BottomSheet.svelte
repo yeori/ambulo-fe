@@ -3,6 +3,7 @@
   import Dnd from '@common/dnd/Dnd.svelte'
   import { DndEvent, type IDndHandler } from '@common/dnd/dnd.js'
   import { sheetStore } from './index.js'
+  export let zIndex = 25
 
   let sheetEl: HTMLElement
   let innerEl: HTMLElement
@@ -33,6 +34,7 @@
 </script>
 
 <section
+  style="--z-index: {zIndex}"
   transition:fly={{
     x: 0,
     y: 40,
@@ -58,7 +60,7 @@
     right: 0;
     width: 100%;
     bottom: 0;
-    z-index: 10;
+    z-index: var(--z-index);
 
     div.container {
       box-shadow: 0 0 8px #0000004d, 0 0 1px #0000006d;

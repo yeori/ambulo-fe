@@ -4,12 +4,13 @@ import JourneyThemePage from './JourneyThemePage.svelte'
 import MapPage from './MapPage.svelte'
 import LoginPage from './LoginPage.svelte'
 import FestivalPage from './FestivalPage.svelte'
-
+import SearchPage from './SearchPage.svelte'
 export {
   MainPage,
   RegionPage,
   JourneyThemePage,
   MapPage,
   LoginPage,
-  FestivalPage
+  FestivalPage,
+  SearchPage
 }

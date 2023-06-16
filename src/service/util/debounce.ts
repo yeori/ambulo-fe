@@ -12,7 +12,7 @@ export class Debounce {
     }
   }
 
-  public debounce = (event: Event) => {
+  debounce = (event: Event) => {
     clearTimeout(this.timer!)
     this.timer = setTimeout(this.callback, this.delay, event)
   }

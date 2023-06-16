@@ -1,15 +1,20 @@
 <script lang="ts">
-  import page from 'page'
+  import router from '@router'
   import AmbuloBadge from '@/common/AmbuloBadge.svelte'
   import userLocation from '../geolocation/user-location.js'
   import toast from '@/common/toast/index.js'
   import GeoPermissionView from '../GeoPermissionView.svelte'
-  import { provinceStore } from '@main/domain/province/province-store.js'
-  import ProvinceBadge from '../../domain/province/ProvinceBadge.svelte'
   import { uiState } from '@main/domain/ui/index.js'
   import dgk from '@/service/api/dgk.js'
+  import UserIcon from '@/common/entity/user/UserIcon.svelte'
+  import ActionIcon from '@/common/ActionIcon.svelte'
+  import SearchField from '@/common/search/SearchField.svelte'
+
   const goToMap = (path) => {
-    page(path)
+    router.push(path)
+  }
+  const gotoSearch = () => {
+    router.push('/search')
   }
   const queryUserLocation = () => {
     userLocation.checkGeoPermission().then((res) => {
@@ -20,16 +25,17 @@
       })
     })
   }
+  const doSearch = (e) => {
+    console.log(e.detail)
+  }
   const send = () => {
     dgk.getCode()
   }
 </script>
 
-<nav class:visible={$uiState.scrollTop >= 30}>
+<nav class:visible={$uiState.scrollTop >= 30 || $uiState.search.visible}>
   <div class="container">
     <div class="inner">
-      <AmbuloBadge on:click={() => goToMap('/')} />
-      <button class="nude" on:click={send}>run</button>
       <!-- {#if $provinceStore.activeProvince}
             {#key $provinceStore.activeProvince}
               <ProvinceBadge province={$provinceStore.activeProvince} />
@@ -37,6 +43,23 @@
           {:else}
             <h3>Ambulo</h3>
           {/if} -->
+      {#if $uiState.search.visible}
+        <ActionIcon
+          icon="chevron_left_400"
+          size="lg"
+          on:click={() => uiState.setSearchVisible(false)}
+        />
+        <SearchField on:keyword={doSearch} />
+      {:else}
+        <AmbuloBadge on:click={() => uiState.setMenuVisible(true)} />
+        <UserIcon />
+        <ActionIcon
+          class="btn"
+          icon="search"
+          size="md"
+          on:click={() => uiState.setSearchVisible(true)}
+        />
+      {/if}
     </div>
   </div>
 </nav>
@@ -66,7 +89,7 @@
     // border-radius: 40px;
     .inner {
       display: flex;
-      padding: 8px 0;
+      padding: 8px;
       height: 50px;
     }
   }

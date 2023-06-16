@@ -11,6 +11,7 @@
   import type { Duration } from '../festival/Festival.js'
   import DurationView from '../festival/DurationView.svelte'
   import AppIcon from '@/common/AppIcon.svelte'
+  import { PlaceContext } from '@/apps/main/component/map/context/PlaceContext.js'
   export let place: Place
   export let isFestival: boolean
   export let duration: Duration = undefined
@@ -18,19 +19,25 @@
   type ViewType = 'info' | 'pic' | 'map'
   let viewType: ViewType = 'info'
   let pictures = []
-  let detail = place.detail
+  let detail
+  let error = undefined
   let contentEl: HTMLElement
   let resizing: ResizeObserver = undefined
   $: {
-    showInfo()
+    showInfo(place)
   }
 
-  const showInfo = () => {
+  const showInfo = (place) => {
     viewType = 'info'
-    detail = undefined
-    placeStore.loadPlaceDetail(place).then(() => {
-      detail = place.detail
-    })
+    error = detail = undefined
+    placeStore
+      .loadPlaceDetail(place)
+      .then(() => {
+        detail = place.detail
+      })
+      .catch((e) => {
+        error = e
+      })
   }
   const showPhoto = () => {
     placeStore.loadPhoto(place).then((res) => {
@@ -39,7 +46,7 @@
     })
   }
   const showLocation = () => {
-    mapStore.showPlace(place, isFestival)
+    // mapStore.showPlace(place, isFestival)
     viewType = 'map'
   }
 </script>
@@ -48,7 +55,7 @@
   <h3>
     <span class="title">{place.title}</span><ActionIcon
       icon="info"
-      on:click={showInfo}
+      on:click={() => showInfo(place)}
     /><ActionIcon icon="photo" on:click={showPhoto} /><ActionIcon
       icon="location_on"
       on:click={showLocation}
@@ -59,11 +66,16 @@
     {#if isFestival}<DurationView {duration} /> {/if}
   </div>
   <div class="address">
-    <button class="nude addr"
-      >{#if detail}<span>{detail.getAddress()}</span>{/if}<AppIcon
-        icon="content_copy"
-      />
-    </button>
+    {#if detail}
+      <button class="nude"
+        ><span class="addr">{detail.getAddress()}</span><AppIcon
+          icon="content_copy"
+        />
+      </button>
+    {/if}
+    {#if error}
+      <p>주소정보를 불러올 수 없습니다.</p>
+    {/if}
   </div>
   <div class="content" bind:this={contentEl}>
     {#if viewType === 'info'}
@@ -77,12 +89,15 @@
           {/if}
         </div>
       {/if}
+      {#if error}
+        <p>정보를 불러올 수 없습니다.</p>
+      {/if}
     {/if}
     {#if viewType === 'pic'}
       <PictureGalleryView {pictures} />
     {/if}
     {#if viewType === 'map'}
-      <MapView spotVisible={false} />
+      <MapView spotVisible={false} mapContext={PlaceContext.fromPlace(place)} />
     {/if}
   </div>
 </section>
@@ -116,16 +131,22 @@
     }
     .address {
       margin-bottom: 8px;
-      .nude.addr {
+      .nude {
         font-size: 1rem;
         font-weight: 400;
         padding: 6px;
         background-color: #f1f1f1;
         display: flex;
         align-items: center;
-        line-height: 0;
+        line-height: 1;
         border-radius: 8px;
         column-gap: 4px;
+        max-width: 100%;
+        .addr {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
     }
     .content {
